@@ -1,774 +1,842 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="overflow-x-hidden w-full">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shree Basava Kirana Store | Live Online Grocery</title>
-    <!-- Tailwind CSS CDN for modern responsive UI -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        .hide { display: none !important; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Shree Basava Kirana Store</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style type="text/tailwindcss">
+  .inp{ @apply w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm bg-white focus:outline-none focus:border-emerald-500; }
+  .btn{ @apply px-4 py-2.5 rounded-xl text-sm font-bold cursor-pointer transition active:scale-95; }
+  .card{ @apply bg-white p-4 rounded-2xl border border-slate-200/60; }
+  .lbl{ @apply block text-xs font-bold text-slate-700 mb-1; }
+</style>
+<style>
+  body{font-family:'Plus Jakarta Sans',sans-serif}
+  .no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
+</style>
 </head>
-<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
+<body class="bg-slate-50 text-slate-800 pb-32 overflow-x-hidden w-full">
 
-    <!-- Top Announcement Bar -->
-    <div id="announcementBar" class="bg-emerald-700 text-white text-xs sm:text-sm py-2 px-4 text-center font-medium shadow-inner flex justify-between items-center">
-        <span><i class="fa-solid fa-bolt mr-1 text-yellow-300"></i> <span id="topBannerText">⚡ Lightning Fast 1-Hour Delivery | Open 6:00 AM - 10:00 PM</span></span>
-        <button onclick="openOwnerModal()" class="bg-emerald-800 hover:bg-emerald-900 text-xs px-3 py-1 rounded border border-emerald-600 transition">
-            <i class="fa-solid fa-lock mr-1"></i> Owner Login
-        </button>
+<!-- Announcement -->
+<div class="bg-emerald-700 text-white text-xs py-2 px-3 sm:px-6 font-medium">
+  <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
+    <div class="flex items-center gap-2 min-w-0 flex-1">
+      <span class="bg-amber-400 text-slate-950 text-[10px] px-2 py-0.5 rounded-full font-extrabold shrink-0">⚡ 1 HR</span>
+      <span id="ann" class="truncate text-[11px] sm:text-xs font-semibold"></span>
+    </div>
+    <button onclick="openLogin()" class="shrink-0 text-[11px] bg-emerald-950/70 hover:bg-emerald-950 px-2.5 py-1 rounded-lg font-bold flex items-center gap-1.5 border border-emerald-500/30 cursor-pointer">
+      <i class="fa-solid fa-lock text-[10px] text-amber-300"></i><span>Owner Login</span>
+    </button>
+  </div>
+</div>
+
+<!-- Header -->
+<header class="bg-white/95 backdrop-blur-md sticky top-0 z-30 border-b border-slate-100">
+  <div class="max-w-7xl mx-auto px-3 sm:px-6 py-3 flex items-center justify-between gap-3">
+    <div class="flex items-center gap-2.5 min-w-0">
+      <div class="bg-emerald-600 text-white p-2.5 rounded-2xl shrink-0"><i class="fa-solid fa-store text-lg"></i></div>
+      <div class="min-w-0">
+        <h1 id="store-title" class="font-extrabold text-base sm:text-xl text-slate-900 leading-tight truncate"></h1>
+        <p id="store-status" class="text-[11px] text-slate-500 flex items-center gap-1.5 font-medium"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>Open • Delivery Within 1 Hour</p>
+      </div>
+    </div>
+    <button onclick="toggleCart()" class="shrink-0 bg-emerald-50 text-emerald-800 border border-emerald-200 px-3.5 py-2 rounded-2xl font-bold flex items-center gap-2 cursor-pointer active:scale-95">
+      <i class="fa-solid fa-bag-shopping text-emerald-600"></i><span class="text-sm hidden sm:inline">My Cart</span>
+      <span id="hdr-count" class="bg-emerald-600 text-white text-[11px] px-2 py-0.5 rounded-full font-extrabold">0</span>
+    </button>
+  </div>
+  <div class="border-t border-slate-100 px-3 sm:px-6 py-2.5">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row gap-2.5 justify-between items-center">
+      <div class="relative w-full md:w-96">
+        <i class="fa-solid fa-magnifying-glass text-xs text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+        <input id="search" oninput="filterProducts()" placeholder="Search rice, atta, oil, snacks, soap..." class="w-full pl-9 pr-3 py-2 bg-slate-100 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-emerald-500/20 focus:outline-none">
+      </div>
+      <div id="cats" class="flex gap-1.5 overflow-x-auto w-full md:w-auto no-scrollbar"></div>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-3 sm:px-6 py-5">
+  <div class="bg-gradient-to-r from-emerald-800 via-emerald-700 to-teal-700 rounded-3xl p-5 sm:p-7 text-white mb-6 shadow-lg flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+    <div class="max-w-xl">
+      <div class="inline-flex items-center gap-1.5 bg-amber-400 text-slate-950 text-[10px] font-extrabold px-3 py-1 rounded-full uppercase mb-2.5"><i class="fa-solid fa-bolt"></i> Guaranteed 1-Hour Home Delivery</div>
+      <h2 class="text-xl sm:text-3xl font-extrabold mb-1.5">Your Neighborhood Kirana, Now Online</h2>
+      <p class="text-emerald-100 text-xs sm:text-sm">Fresh stock, fair prices, zero app commissions. Add items, apply a coupon and order on WhatsApp!</p>
+    </div>
+    <div class="bg-white/15 border border-white/20 px-4 py-3 rounded-2xl shrink-0">
+      <p class="text-[11px] text-emerald-100 font-semibold uppercase">Express Dispatch</p>
+      <p class="text-xl font-black text-amber-300">Within 1 Hr</p>
+    </div>
+  </div>
+
+  <!-- Live Offers & Coupons Bar -->
+  <div id="live-coupons-bar" class="mb-5"></div>
+
+  <div class="flex justify-between items-center mb-4">
+    <h3 class="text-base sm:text-lg font-extrabold text-slate-900">Fresh Store Inventory</h3>
+    <span id="pcount" class="text-[11px] font-semibold text-slate-600 bg-slate-200/70 px-3 py-1 rounded-full"></span>
+  </div>
+  <div id="grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-5"></div>
+</main>
+
+<!-- Floating cart bar -->
+<div id="fbar" class="fixed bottom-4 inset-x-0 z-30 px-4 pointer-events-none hidden">
+  <div class="max-w-md mx-auto pointer-events-auto bg-emerald-700 text-white rounded-2xl p-3 shadow-2xl flex items-center justify-between gap-3">
+    <div class="flex items-center gap-3 min-w-0">
+      <div class="bg-emerald-900/70 w-10 h-10 rounded-xl flex items-center justify-center shrink-0"><i class="fa-solid fa-basket-shopping text-amber-300"></i></div>
+      <div class="min-w-0">
+        <div class="flex items-center gap-2"><span id="fbar-items" class="font-extrabold text-sm"></span><span class="text-emerald-300">•</span><span id="fbar-total" class="font-black text-base text-amber-300"></span></div>
+        <p id="fbar-save" class="text-[11px] text-emerald-100 truncate"></p>
+      </div>
+    </div>
+    <button onclick="toggleCart()" class="shrink-0 bg-white text-emerald-800 font-extrabold text-sm px-4 py-2.5 rounded-xl flex items-center gap-1.5 cursor-pointer active:scale-95">View Cart <i class="fa-solid fa-arrow-right text-xs"></i></button>
+  </div>
+</div>
+
+<!-- Cart drawer -->
+<div id="cart-drawer" class="fixed inset-0 z-50 hidden">
+  <div class="absolute inset-0 bg-slate-900/60" onclick="toggleCart()"></div>
+  <div class="absolute inset-y-0 right-0 w-full sm:max-w-md bg-slate-50 shadow-2xl flex flex-col">
+    <div class="p-4 bg-emerald-700 text-white flex items-center justify-between">
+      <div><h3 class="font-extrabold text-lg"><i class="fa-solid fa-basket-shopping text-amber-300 mr-1"></i> Your Cart</h3><p class="text-[11px] text-emerald-100">⏱️ Express Delivery Within 1 Hour</p></div>
+      <button onclick="toggleCart()" class="w-8 h-8 rounded-full hover:bg-emerald-800 text-xl font-bold cursor-pointer">&times;</button>
+    </div>
+    <div class="bg-emerald-50 border-b border-emerald-100 px-4 py-2.5">
+      <div class="flex justify-between text-xs font-bold text-emerald-900 mb-1.5"><span id="prog-text"></span><span id="prog-pct"></span></div>
+      <div class="w-full bg-emerald-200 h-2 rounded-full overflow-hidden"><div id="prog-bar" class="bg-emerald-600 h-full w-0 transition-all duration-300"></div></div>
     </div>
 
-    <!-- Main Navigation Header -->
-    <header class="bg-white shadow-sm sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-3">
-            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchView('storefront')">
-                <div class="bg-emerald-600 text-white p-2.5 rounded-xl shadow-md">
-                    <i class="fa-solid fa-store text-xl"></i>
-                </div>
-                <div>
-                    <h1 id="storeTitleDisp" class="text-lg sm:text-xl font-bold text-gray-900 tracking-tight">Shree Basava Kirana Store</h1>
-                    <p class="text-xs text-emerald-600 font-semibold"><span id="syncStatusIndicator">🟢 Live Cloud Sync Active</span></p>
-                </div>
-            </div>
+    <div class="flex-1 overflow-y-auto p-3 space-y-3">
+      <div id="coupon-row"></div>
+      <div id="cart-items" class="space-y-2"></div>
+      <div id="bill"></div>
 
-            <!-- Search Bar -->
-            <div class="w-full sm:w-96 relative">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                    <i class="fa-solid fa-search"></i>
-                </span>
-                <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Search rice, dal, oil, ghee..." class="w-full pl-10 pr-4 py-2 text-sm bg-gray-100 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+      <div id="checkout" class="space-y-3 hidden">
+        <div class="card space-y-2.5">
+          <h4 class="font-extrabold text-sm">Delivery Details</h4>
+          <input id="cust-name" placeholder="Your Name *" class="inp">
+          <input id="cust-phone" type="tel" inputmode="numeric" maxlength="10" placeholder="10-Digit Mobile Number *" class="inp">
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <span class="lbl !mb-0">Delivery Location</span>
+              <button onclick="detectLocation()" class="text-xs font-bold text-emerald-700 cursor-pointer"><i class="fa-solid fa-location-crosshairs"></i> Detect again</button>
             </div>
-
-            <!-- Navigation Actions -->
-            <div class="flex items-center space-x-3">
-                <button onclick="switchView('storefront')" class="px-3 py-2 text-sm font-medium text-gray-700 hover:text-emerald-600 transition flex items-center gap-1.5">
-                    <i class="fa-solid fa-house"></i> Shop
-                </button>
-                <button onclick="openCartModal()" class="relative bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-medium shadow transition flex items-center gap-2">
-                    <i class="fa-solid fa-cart-shopping"></i> Cart 
-                    <span id="cartCountBadge" class="bg-white text-emerald-700 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
-                </button>
-                <div id="adminNavBtn" class="hide">
-                    <button onclick="switchView('admin')" class="bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-xl text-sm font-medium shadow transition flex items-center gap-2">
-                        <i class="fa-solid fa-gauge-high"></i> Admin Panel
-                    </button>
-                </div>
-            </div>
+            <textarea id="cust-address" rows="2" placeholder="Detecting your location automatically…" class="inp"></textarea>
+            <p id="loc-msg" class="text-[11px] mt-1 font-semibold text-slate-500"></p>
+          </div>
         </div>
-    </header>
-
-    <!-- Prominent Coupons & Offers Banner (Positioned near top for high visibility) -->
-    <section class="max-w-7xl mx-auto px-4 mt-4 w-full">
-        <div id="activeCouponsBanner" class="bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-2xl p-4 shadow-md flex flex-col md:flex-row justify-between items-center gap-3">
-            <div class="flex items-center gap-3">
-                <div class="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
-                    <i class="fa-solid fa-tags text-2xl text-yellow-200"></i>
-                </div>
-                <div>
-                    <h3 class="font-bold text-base sm:text-lg">Special Store Offers & Coupons</h3>
-                    <p id="couponDisplayDesc" class="text-xs sm:text-sm text-amber-100">Use coupon <span class="bg-black/30 px-2 py-0.5 rounded font-mono font-bold text-yellow-300">BASAVA10</span> at checkout to get instant discounts!</p>
-                </div>
-            </div>
-            <div class="flex items-center gap-2">
-                <button onclick="copyCouponCode('BASAVA10')" class="bg-white text-orange-700 hover:bg-yellow-100 text-xs font-bold px-4 py-2 rounded-xl shadow transition">
-                    <i class="fa-solid fa-copy mr-1"></i> Copy Code
-                </button>
-            </div>
+        <div class="card">
+          <h4 class="font-extrabold text-sm mb-2">Payment on Delivery</h4>
+          <div class="grid grid-cols-2 gap-2">
+            <label class="border-2 border-slate-200 rounded-xl p-3 cursor-pointer text-center has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50">
+              <input type="radio" name="pay" value="UPI on Delivery" class="hidden" checked>
+              <i class="fa-solid fa-mobile-screen-button text-emerald-600 text-lg"></i><p class="text-xs font-extrabold mt-1">UPI on Delivery</p><p class="text-[10px] text-slate-500">Pay by scanning QR</p>
+            </label>
+            <label class="border-2 border-slate-200 rounded-xl p-3 cursor-pointer text-center has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50">
+              <input type="radio" name="pay" value="Cash on Delivery" class="hidden">
+              <i class="fa-solid fa-indian-rupee-sign text-emerald-600 text-lg"></i><p class="text-xs font-extrabold mt-1">Cash on Delivery</p><p class="text-[10px] text-slate-500">Pay cash at door</p>
+            </label>
+          </div>
         </div>
-    </section>
-
-    <!-- Main Content Container -->
-    <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full">
-        
-        <!-- STOREFRONT VIEW -->
-        <div id="storefrontView" class="space-y-6">
-            <!-- Category Filter Pills -->
-            <div class="flex overflow-x-auto pb-2 gap-2 scrollbar-none" id="categoryContainer">
-                <button onclick="filterCategory('All')" class="category-btn bg-emerald-600 text-white px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap shadow-sm transition">All Items</button>
-                <button onclick="filterCategory('Grains & Dals')" class="category-btn bg-white text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap border border-gray-200 transition">Grains & Dals</button>
-                <button onclick="filterCategory('Oils & Ghee')" class="category-btn bg-white text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap border border-gray-200 transition">Oils & Ghee</button>
-                <button onclick="filterCategory('Snacks & Sweets')" class="category-btn bg-white text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap border border-gray-200 transition">Snacks & Sweets</button>
-                <button onclick="filterCategory('Household')" class="category-btn bg-white text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap border border-gray-200 transition">Household</button>
-            </div>
-
-            <!-- Product Grid -->
-            <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                <!-- Dynamically populated from JS / Firebase -->
-            </div>
-        </div>
-
-        <!-- ADMIN PANEL VIEW -->
-        <div id="adminView" class="hide space-y-6">
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                    <h2 class="text-2xl font-bold text-gray-900">Store Management Dashboard</h2>
-                    <p class="text-sm text-gray-500">Manage stock, prices, store settings, coupons, and customer orders in real time.</p>
-                </div>
-                <div class="flex items-center gap-3">
-                    <button onclick="logoutOwner()" class="bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2 rounded-xl text-sm font-medium border border-red-200 transition">
-                        <i class="fa-solid fa-right-from-bracket mr-1"></i> Lock Admin
-                    </button>
-                </div>
-            </div>
-
-            <!-- Admin Tabs Navigation -->
-            <div class="flex border-b border-gray-200 gap-6">
-                <button onclick="switchAdminTab('stock')" id="adminTabStock" class="pb-3 text-sm font-bold text-emerald-600 border-b-2 border-emerald-600 transition">Manage Stock & Prices</button>
-                <button onclick="switchAdminTab('orders')" id="adminTabOrders" class="pb-3 text-sm font-medium text-gray-500 hover:text-gray-900 transition">Customer Orders</button>
-                <button onclick="switchAdminTab('settings')" id="adminTabSettings" class="pb-3 text-sm font-medium text-gray-500 hover:text-gray-900 transition">Store Settings & Coupons</button>
-            </div>
-
-            <!-- TAB 1: MANAGE STOCK & PRICES (With Corrected Column Order: Product -> Price -> Save -> Margin -> Stock -> Actions) -->
-            <div id="adminContentStock" class="space-y-4">
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 flex justify-between items-center">
-                    <h3 class="font-bold text-gray-800">Inventory Control</h3>
-                    <button onclick="openAddProductModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-medium shadow transition">
-                        <i class="fa-solid fa-plus mr-1"></i> Add New Item
-                    </button>
-                </div>
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-gray-50 border-b border-gray-200 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                <th class="p-4">Product Name</th>
-                                <th class="p-4">Price (₹)</th>
-                                <th class="p-4">Save (₹)</th>
-                                <th class="p-4">Margin (%)</th>
-                                <th class="p-4">Stock Status</th>
-                                <th class="p-4 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminStockTableBody" class="divide-y divide-gray-100 text-sm">
-                            <!-- Populated dynamically -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- TAB 2: CUSTOMER ORDERS -->
-            <div id="adminContentOrders" class="hide space-y-4">
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-4">
-                    <h3 class="font-bold text-gray-800 mb-2">Live Customer Orders</h3>
-                    <div id="adminOrdersList" class="space-y-3">
-                        <p class="text-sm text-gray-500 py-4 text-center">No orders received yet.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 3: STORE SETTINGS & COUPONS -->
-            <div id="adminContentSettings" class="hide grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Store Details Settings -->
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 space-y-4">
-                    <h3 class="font-bold text-gray-800 text-lg border-b pb-2"><i class="fa-solid fa-store text-emerald-600 mr-2"></i> Store Information</h3>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-600 mb-1">Store Name</label>
-                        <input type="text" id="settingStoreName" value="Shree Basava Kirana Store" class="w-full p-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-emerald-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-600 mb-1">Owner WhatsApp Phone Number</label>
-                        <input type="text" id="settingPhone" value="919888888888" class="w-full p-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-emerald-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-600 mb-1">Delivery Time Notice</label>
-                        <input type="text" id="settingDeliveryTime" value="1-Hour Delivery Guaranteed" class="w-full p-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-emerald-500">
-                    </div>
-                    <button onclick="saveStoreSettings()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-xl text-sm shadow transition">
-                        Save Store Settings
-                    </button>
-                </div>
-
-                <!-- Coupons Management -->
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 space-y-4">
-                    <h3 class="font-bold text-gray-800 text-lg border-b pb-2"><i class="fa-solid fa-tags text-orange-600 mr-2"></i> Coupons & Offers</h3>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-600 mb-1">Coupon Code</label>
-                        <input type="text" id="settingCouponCode" value="BASAVA10" class="w-full p-2.5 border rounded-xl text-sm uppercase font-mono focus:ring-2 focus:ring-orange-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-600 mb-1">Discount Description / Banner Text</label>
-                        <input type="text" id="settingCouponDesc" value="Use coupon BASAVA10 to get instant discounts!" class="w-full p-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-orange-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-600 mb-1">Discount Percentage (%)</label>
-                        <input type="number" id="settingCouponDiscount" value="10" class="w-full p-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-orange-500">
-                    </div>
-                    <button onclick="saveCouponSettings()" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-2.5 rounded-xl text-sm shadow transition">
-                        Update Live Coupon
-                    </button>
-                </div>
-            </div>
-        </div>
-
-    </main>
-
-    <!-- OWNER LOGIN MODAL (Persistent via LocalStorage & Forgot PIN option) -->
-    <div id="ownerModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hide flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6 space-y-5 animate-scale">
-            <div class="flex justify-between items-center">
-                <h3 class="font-bold text-lg text-gray-900"><i class="fa-solid fa-lock text-emerald-600 mr-2"></i> Owner Authentication</h3>
-                <button onclick="closeOwnerModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <div id="pinLoginSection" class="space-y-4">
-                <p class="text-xs text-gray-500">Enter your 4-digit security PIN to access the store management dashboard.</p>
-                <div>
-                    <input type="password" id="ownerPinInput" maxlength="4" placeholder="••••" class="w-full text-center tracking-widest text-2xl p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500">
-                </div>
-                <button onclick="verifyOwnerPin()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-medium shadow transition">
-                    Unlock Dashboard
-                </button>
-                <div class="text-center">
-                    <button onclick="showForgotPin()" class="text-xs text-emerald-600 hover:underline font-medium">Forgot PIN? (Recover via Gmail)</button>
-                </div>
-            </div>
-
-            <!-- Forgot PIN / Gmail Recovery Section (Hidden by default) -->
-            <div id="gmailRecoverySection" class="hide space-y-4">
-                <p class="text-xs text-gray-500">Enter your registered recovery Gmail to reset your PIN.</p>
-                <input type="email" id="recoveryEmailInput" placeholder="owner@gmail.com" class="w-full p-3 border border-gray-300 rounded-xl text-sm">
-                <button onclick="sendRecoveryPin()" class="w-full bg-gray-900 hover:bg-black text-white py-2.5 rounded-xl text-sm font-medium">
-                    Send Recovery Instructions
-                </button>
-                <button onclick="backToPinLogin()" class="w-full text-xs text-gray-500 hover:text-gray-800">Back to PIN login</button>
-            </div>
-        </div>
+      </div>
     </div>
 
-    <!-- CART & CHECKOUT MODAL -->
-    <div id="cartModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hide flex items-center justify-end">
-        <div class="bg-white w-full max-w-md h-full shadow-2xl flex flex-col justify-between p-6">
-            <div>
-                <div class="flex justify-between items-center border-b pb-4">
-                    <h3 class="font-bold text-lg text-gray-900"><i class="fa-solid fa-cart-shopping text-emerald-600 mr-2"></i> Your Shopping Cart</h3>
-                    <button onclick="closeCartModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
-                </div>
-                <div id="cartItemsList" class="py-4 space-y-3 max-h-[60vh] overflow-y-auto">
-                    <!-- Cart items populated here -->
-                </div>
-            </div>
-            <div class="border-t pt-4 space-y-3">
-                <div class="flex justify-between text-sm">
-                    <span class="text-gray-600">Subtotal</span>
-                    <span id="cartSubtotal" class="font-bold">₹0</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                    <span class="text-emerald-600 font-medium">Coupon Discount</span>
-                    <span id="cartDiscount" class="text-emerald-600 font-bold">-₹0</span>
-                </div>
-                <div class="flex justify-between text-base font-bold border-t pt-2">
-                    <span>Total Amount</span>
-                    <span id="cartTotal" class="text-emerald-700">₹0</span>
-                </div>
-                <div class="space-y-2">
-                    <input type="text" id="checkoutCustomerName" placeholder="Your Name" class="w-full p-2.5 text-sm border rounded-xl">
-                    <input type="text" id="checkoutCustomerPhone" placeholder="Your Mobile Number" class="w-full p-2.5 text-sm border rounded-xl">
-                    <textarea id="checkoutCustomerAddress" placeholder="Delivery Address / Landmark" class="w-full p-2.5 text-sm border rounded-xl h-16"></textarea>
-                </div>
-                <button onclick="checkoutWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold shadow-lg flex items-center justify-center gap-2 transition">
-                    <i class="fa-brands fa-whatsapp text-xl"></i> Place Order via WhatsApp
-                </button>
-            </div>
-        </div>
+    <div id="cart-footer" class="p-3 bg-white border-t border-slate-200 hidden">
+      <button onclick="placeOrder()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3.5 rounded-xl flex items-center justify-center gap-2 shadow-lg cursor-pointer active:scale-[0.99]">
+        <i class="fa-brands fa-whatsapp text-lg"></i><span id="place-label">Place Order on WhatsApp</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Coupon sheet (Centered on screen) -->
+<div id="coupon-sheet" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4">
+  <div class="absolute inset-0 bg-slate-900/60" onclick="closeCoupons()"></div>
+  <div class="relative w-full max-w-md bg-white rounded-3xl p-5 max-h-[80vh] overflow-y-auto shadow-2xl">
+    <div class="flex justify-between items-center mb-3"><h3 class="font-extrabold text-base"><i class="fa-solid fa-tags text-amber-500 mr-1.5"></i>Offers & Coupons</h3><button onclick="closeCoupons()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 text-xl font-bold cursor-pointer">&times;</button></div>
+    <div class="flex gap-2 mb-3"><input id="coupon-input" placeholder="Enter coupon code" class="inp uppercase"><button onclick="applyCoupon($('coupon-input').value)" class="btn bg-emerald-600 text-white">Apply</button></div>
+    <div id="coupon-list" class="space-y-2.5"></div>
+  </div>
+</div>
+
+<!-- Owner login / setup / recovery -->
+<div id="login-modal" class="fixed inset-0 z-[55] bg-slate-900/70 flex items-center justify-center hidden p-4">
+  <div class="bg-white p-6 rounded-3xl w-full max-w-sm shadow-2xl">
+    <div id="v-login" class="hidden">
+      <div class="text-center mb-5"><div class="w-12 h-12 bg-emerald-100 text-emerald-700 rounded-2xl mx-auto flex items-center justify-center text-xl mb-3"><i class="fa-solid fa-user-shield"></i></div>
+        <h3 class="font-extrabold text-lg">Store Owner Login</h3><p class="text-xs text-slate-500 mt-1">Enter your 4-digit PIN</p></div>
+      <div data-pin="login-pin" data-ph="••••" class="mb-3"></div>
+      <div class="text-right mb-5"><button onclick="view('recover')" class="text-xs font-bold text-emerald-700 cursor-pointer">Forgot PIN?</button></div>
+      <div class="flex gap-3"><button onclick="closeLogin()" class="btn w-1/2 bg-slate-100 text-slate-700">Cancel</button><button onclick="doLogin()" class="btn w-1/2 bg-emerald-600 text-white">Login</button></div>
+    </div>
+    <div id="v-setup" class="hidden">
+      <div class="text-center mb-4"><div class="w-12 h-12 bg-amber-100 text-amber-700 rounded-2xl mx-auto flex items-center justify-center text-xl mb-3"><i class="fa-solid fa-shield-halved"></i></div>
+        <h3 class="font-extrabold text-lg">Set Up Owner Access</h3><p class="text-xs text-slate-500 mt-1">Create your PIN and add your Gmail for recovery.</p></div>
+      <div class="space-y-3 mb-4">
+        <div><label class="lbl">Create 4-Digit PIN</label><div data-pin="setup-pin" data-ph="New PIN"></div></div>
+        <div><label class="lbl">Gmail (for PIN recovery)</label><input id="setup-email" type="email" placeholder="yourname@gmail.com" class="inp"></div>
+      </div>
+      <div class="flex gap-3"><button onclick="closeLogin()" class="btn w-1/2 bg-slate-100 text-slate-700">Cancel</button><button onclick="doSetup()" class="btn w-1/2 bg-emerald-600 text-white">Save & Continue</button></div>
+    </div>
+    <div id="v-recover" class="hidden">
+      <div class="text-center mb-4"><div class="w-12 h-12 bg-amber-100 text-amber-700 rounded-2xl mx-auto flex items-center justify-center text-xl mb-3"><i class="fa-solid fa-envelope"></i></div>
+        <h3 class="font-extrabold text-lg">Recover with Gmail</h3><p class="text-xs text-slate-500 mt-1">Enter your registered Gmail and choose a new PIN.</p></div>
+      <div class="space-y-3 mb-4">
+        <div><label class="lbl">Registered Gmail</label><input id="rec-email" type="email" placeholder="owner@gmail.com" class="inp"></div>
+        <div><label class="lbl">Set New 4-Digit PIN</label><div data-pin="rec-pin" data-ph="New PIN"></div></div>
+      </div>
+      <div class="flex gap-3"><button onclick="view('login')" class="btn w-1/2 bg-slate-100 text-slate-700">Back</button><button onclick="doRecover()" class="btn w-1/2 bg-amber-500 text-slate-950">Reset PIN</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- Admin dashboard -->
+<div id="admin" class="fixed inset-0 z-50 bg-slate-100 overflow-y-auto overflow-x-hidden hidden">
+  <div class="max-w-5xl mx-auto px-3 sm:px-6 py-5">
+    <div class="flex justify-between items-center bg-white p-4 rounded-2xl mb-4 gap-3 border border-slate-200/60">
+      <div><h2 class="text-lg font-extrabold">Store Admin Panel</h2><p class="text-[11px] text-slate-500">Items, orders, delivery, categories & coupons</p></div>
+      <button onclick="closeDash()" class="btn bg-rose-50 text-rose-600 !py-2 text-xs"><i class="fa-solid fa-right-from-bracket mr-1"></i> Exit</button>
+    </div>
+    <div class="grid grid-cols-3 gap-2 mb-4">
+      <button id="tb-inv" onclick="tab('inv')" class="btn text-xs">📦 Items (<span id="a-count">0</span>)</button>
+      <button id="tb-ord" onclick="tab('ord')" class="btn text-xs">🧾 Orders (<span id="o-count">0</span>)</button>
+      <button id="tb-set" onclick="tab('set')" class="btn text-xs">⚙️ Settings</button>
     </div>
 
-    <!-- ADD / EDIT PRODUCT MODAL -->
-    <div id="productModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hide flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 space-y-4">
-            <div class="flex justify-between items-center border-b pb-3">
-                <h3 id="productModalTitle" class="font-bold text-lg text-gray-900">Add New Product</h3>
-                <button onclick="closeProductModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <input type="hidden" id="editProductId">
-            <div>
-                <label class="block text-xs font-semibold text-gray-600 mb-1">Product Name</label>
-                <input type="text" id="modalProdName" class="w-full p-2.5 border rounded-xl text-sm" placeholder="e.g. Amul Pure Cow Ghee 1L">
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">Price (₹)</label>
-                    <input type="number" id="modalProdPrice" class="w-full p-2.5 border rounded-xl text-sm" placeholder="550">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">Save / Discount (₹)</label>
-                    <input type="number" id="modalProdSave" class="w-full p-2.5 border rounded-xl text-sm" placeholder="50">
-                </div>
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">Margin (%)</label>
-                    <input type="number" id="modalProdMargin" class="w-full p-2.5 border rounded-xl text-sm" placeholder="15">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">Category</label>
-                    <select id="modalProdCategory" class="w-full p-2.5 border rounded-xl text-sm bg-white">
-                        <option value="Grains & Dals">Grains & Dals</option>
-                        <option value="Oils & Ghee">Oils & Ghee</option>
-                        <option value="Snacks & Sweets">Snacks & Sweets</option>
-                        <option value="Household">Household</option>
-                    </select>
-                </div>
-            </div>
-            <div>
-                <label class="block text-xs font-semibold text-gray-600 mb-1">Stock Status</label>
-                <select id="modalProdStock" class="w-full p-2.5 border rounded-xl text-sm bg-white">
-                    <option value="In Stock">In Stock</option>
-                    <option value="Out of Stock">Out of Stock</option>
-                </select>
-            </div>
-            <button onclick="saveProductData()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl shadow transition">
-                Save Product
-            </button>
+    <!-- Inventory -->
+    <div id="at-inv" class="space-y-4">
+      <div class="card">
+        <h3 class="font-extrabold mb-3"><i class="fa-solid fa-circle-plus text-emerald-600"></i> Add New Item</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-3">
+          <input id="n-name" placeholder="Item Name *" class="inp">
+          <input id="n-weight" placeholder="Pack Size (e.g. 5 kg) *" class="inp">
+          <div class="grid grid-cols-2 gap-2"><input id="n-price" type="number" placeholder="Selling ₹ *" class="inp"><input id="n-mrp" type="number" placeholder="MRP ₹ (opt)" class="inp"></div>
+          <select id="n-cat" class="inp"></select>
+          <select id="n-stock" class="inp"><option value="1">✅ In Stock</option><option value="0">❌ Out of Stock</option></select>
         </div>
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/80 mb-3 grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
+          <label class="flex items-center justify-center gap-2 bg-emerald-50 text-emerald-800 border border-dashed border-emerald-300 rounded-xl py-2.5 text-xs font-bold cursor-pointer">
+            <i class="fa-solid fa-camera"></i><span id="up-label">Upload / Take Photo</span>
+            <input type="file" accept="image/*" class="hidden" onchange="handlePhoto(event)">
+          </label>
+          <input id="n-url" placeholder="OR paste image link" class="inp">
+          <div id="prev-wrap" class="hidden items-center gap-3"><img id="prev-img" class="w-12 h-12 rounded-xl object-cover border border-emerald-300"><span class="text-xs text-emerald-700 font-bold">✅ Photo ready</span></div>
+        </div>
+        <button onclick="addProduct()" class="btn bg-emerald-600 text-white">+ Add Item to Store</button>
+      </div>
+      <div class="card">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-4">
+          <h3 class="font-extrabold">Manage Stock & Prices</h3>
+          <div class="grid grid-cols-3 gap-1.5 w-full sm:w-80 bg-slate-100 p-1 rounded-xl">
+            <button id="sf-all" onclick="setFilter('all')" class="py-1.5 rounded-lg text-[11px] font-bold cursor-pointer">All</button>
+            <button id="sf-in" onclick="setFilter('in')" class="py-1.5 rounded-lg text-[11px] font-bold cursor-pointer">✅ In Stock</button>
+            <button id="sf-out" onclick="setFilter('out')" class="py-1.5 rounded-lg text-[11px] font-bold cursor-pointer">❌ Out</button>
+          </div>
+        </div>
+        <div id="a-list" class="space-y-3"></div>
+      </div>
     </div>
 
-    <!-- Core Application Logic & Firebase Realtime Sync -->
-    <script>
-        const FIREBASE_URL = "https://kirana-store-default-rtdb.firebaseio.com/"; // Connected Firebase DB
+    <!-- Orders -->
+    <div id="at-ord" class="hidden"><div class="card">
+      <div class="flex justify-between items-center mb-4"><h3 class="font-extrabold">Recent WhatsApp Orders</h3><button onclick="clearOrders()" class="btn bg-rose-50 text-rose-600 !py-1.5 text-xs">Clear All</button></div>
+      <div id="o-list" class="space-y-3"></div>
+    </div></div>
 
-        let products = [
-            { id: "1", name: "Amul Pure Cow Ghee 1L", price: 540, save: 60, margin: 12, category: "Oils & Ghee", stock: "In Stock" },
-            { id: "2", name: "Fortune Sunite Sunflower Oil 1L", price: 135, save: 15, margin: 8, category: "Oils & Ghee", stock: "In Stock" },
-            { id: "3", name: "Tata Salt 1kg", price: 28, save: 2, margin: 5, category: "Household", stock: "In Stock" },
-            { id: "4", name: "Premium Sona Masuri Rice 10kg", price: 520, save: 80, margin: 15, category: "Grains & Dals", stock: "In Stock" },
-            { id: "5", name: "Toor Dal Premium 1kg", price: 145, save: 20, margin: 10, category: "Grains & Dals", stock: "In Stock" }
-        ];
+    <!-- Settings -->
+    <div id="at-set" class="hidden space-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="card space-y-3">
+          <h3 class="font-extrabold"><i class="fa-solid fa-store text-emerald-600"></i> Store Details</h3>
+          <div>
+            <label class="lbl">Shop Status (Open / Close Store)</label>
+            <div class="grid grid-cols-2 gap-2">
+              <button type="button" id="st-open" onclick="setShopStatus(true)" class="btn text-xs !py-2">🟢 Shop Open</button>
+              <button type="button" id="st-close" onclick="setShopStatus(false)" class="btn text-xs !py-2">🔴 Shop Closed</button>
+            </div>
+          </div>
+          <div><label class="lbl">Store Name</label><input id="s-name" class="inp"></div>
+          <div><label class="lbl">Owner WhatsApp (with 91, e.g. 919876543210)</label><input id="s-wa" type="tel" class="inp"></div>
+          <button onclick="saveSettings()" class="btn w-full bg-emerald-600 text-white">Save Store Details</button>
+        </div>
+        <div class="card space-y-3">
+          <h3 class="font-extrabold"><i class="fa-solid fa-motorcycle text-emerald-600"></i> Delivery Charges</h3>
+          <div><label class="lbl">Delivery Charge (₹) — 0 for always free</label><input id="s-fee" type="number" min="0" class="inp"></div>
+          <div><label class="lbl">Free Delivery Above (₹)</label><input id="s-min" type="number" min="0" class="inp"></div>
+          <button onclick="saveSettings()" class="btn w-full bg-emerald-600 text-white">Save Store & Delivery Settings</button>
+        </div>
+      </div>
 
-        let cart = [];
-        let storeConfig = {
-            name: "Shree Basava Kirana Store",
-            phone: "919888888888",
-            deliveryTime: "1-Hour Delivery Guaranteed",
-            couponCode: "BASAVA10",
-            couponDesc: "Use coupon BASAVA10 to get instant discounts!",
-            couponDiscount: 10
-        };
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="card">
+          <h3 class="font-extrabold mb-3"><i class="fa-solid fa-layer-group text-emerald-600"></i> Categories</h3>
+          <div id="s-cats" class="flex flex-wrap gap-2 mb-3"></div>
+          <div class="flex gap-2"><input id="new-cat" placeholder="New category (e.g. Fruits & Veg)" class="inp"><button onclick="addCat()" class="btn bg-emerald-600 text-white">Add</button></div>
+        </div>
+        <div class="card">
+          <h3 class="font-extrabold mb-3"><i class="fa-solid fa-tags text-emerald-600"></i> Discount Coupons</h3>
+          <div id="s-coupons" class="space-y-2 mb-3"></div>
+          <div class="grid grid-cols-2 gap-2">
+            <input id="nc-code" placeholder="CODE" class="inp uppercase">
+            <select id="nc-type" class="inp"><option value="pct">% off</option><option value="flat">Flat ₹ off</option></select>
+            <input id="nc-val" type="number" placeholder="Value" class="inp">
+            <input id="nc-min" type="number" placeholder="Min order ₹" class="inp">
+            <input id="nc-max" type="number" placeholder="Max discount ₹ (% only)" class="inp col-span-2">
+          </div>
+          <button onclick="addCoupon()" class="btn w-full bg-emerald-600 text-white mt-2">Add Coupon</button>
+        </div>
+      </div>
 
-        let currentCategory = 'All';
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="card space-y-3">
+          <h3 class="font-extrabold"><i class="fa-solid fa-lock text-emerald-600"></i> PIN & Gmail Recovery</h3>
+          <div><label class="lbl">New 4-Digit PIN (leave empty to keep current)</label><div data-pin="s-pin" data-ph="New PIN"></div></div>
+          <div><label class="lbl">Recovery Gmail</label><input id="s-email" type="email" class="inp"></div>
+          <button onclick="saveSecurity()" class="btn w-full bg-emerald-600 text-white">Save PIN & Gmail</button>
+        </div>
+        <div class="card space-y-3">
+          <h3 class="font-extrabold"><i class="fa-solid fa-database text-blue-600"></i> Backup</h3>
+          <p class="text-xs text-slate-500">Save a backup of items, photos, prices & settings, or restore one anytime.</p>
+          <button onclick="exportBackup()" class="btn w-full bg-blue-50 text-blue-700 border border-blue-200"><i class="fa-solid fa-download"></i> Download Backup</button>
+          <label class="btn w-full bg-slate-50 text-slate-700 border border-slate-200 block text-center"><i class="fa-solid fa-upload"></i> Restore Backup<input type="file" accept=".json" class="hidden" onchange="importBackup(event)"></label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-        // Initialize on page load
-        window.addEventListener("DOMContentLoaded", () => {
-            checkOwnerPersistence();
-            fetchFirebaseData();
-        });
+<div id="toast" class="fixed top-16 inset-x-4 z-[70] hidden pointer-events-none"><div class="max-w-sm mx-auto bg-slate-900 text-white text-sm font-semibold rounded-xl px-4 py-3 shadow-xl text-center" id="toast-t"></div></div>
 
-        // 1. Persistent Owner Authentication Check
-        function checkOwnerPersistence() {
-            const isLogged = localStorage.getItem("basava_owner_logged_in");
-            if (isLogged === "true") {
-                document.getElementById("adminNavBtn").classList.remove("hide");
-            }
-        }
+<!-- ADD-ON: My Orders sheet -->
+<div id="ao-orders" class="fixed inset-0 z-[60] hidden">
+  <div class="absolute inset-0 bg-slate-900/60" onclick="aoClose('ao-orders')"></div>
+  <div class="absolute bottom-0 inset-x-0 max-w-md mx-auto bg-white rounded-t-3xl p-4 max-h-[85vh] overflow-y-auto">
+    <div class="flex justify-between items-center mb-3"><h3 class="font-extrabold">My Orders</h3><button onclick="aoClose('ao-orders')" class="text-2xl cursor-pointer">&times;</button></div>
+    <div id="ao-orders-list" class="space-y-3"></div>
+  </div>
+</div>
+<!-- ADD-ON: Feedback sheet -->
+<div id="ao-fb" class="fixed inset-0 z-[60] hidden">
+  <div class="absolute inset-0 bg-slate-900/60" onclick="aoClose('ao-fb')"></div>
+  <div class="absolute bottom-0 inset-x-0 max-w-md mx-auto bg-white rounded-t-3xl p-4">
+    <div class="flex justify-between items-center"><h3 class="font-extrabold">How was your experience?</h3><button onclick="aoClose('ao-fb')" class="text-2xl cursor-pointer">&times;</button></div>
+    <div id="ao-stars" class="flex justify-center gap-2 text-4xl my-3"></div>
+    <textarea id="ao-fb-text" rows="3" placeholder="Any comments? (optional)" class="inp mb-3"></textarea>
+    <button onclick="aoSubmitFb()" class="btn w-full bg-emerald-600 text-white">Send Feedback</button>
+  </div>
+</div>
 
-        function openOwnerModal() {
-            if (localStorage.getItem("basava_owner_logged_in") === "true") {
-                switchView('admin');
-                return;
-            }
-            document.getElementById("ownerModal").classList.remove("hide");
-        }
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const load=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}};
+const store=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){toast('Storage full – use smaller photos');return false}};
+function toast(m){$('toast-t').textContent=m;$('toast').classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>$('toast').classList.add('hidden'),2400)}
+const PH='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#f1f5f9"/><text x="50" y="64" font-size="42" text-anchor="middle">🛒</text></svg>');
 
-        function closeOwnerModal() {
-            document.getElementById("ownerModal").classList.add("hide");
-        }
+/* ---------- Safe defaults (store can never open empty) ---------- */
+const DEF_CATS=['Staples & Dal','Oils & Ghee','Snacks & Drinks','Dairy & Bread','Household'];
+const DEF_PRODUCTS=[
+ {id:1,name:'Aashirvaad Shudh Chakki Atta',weight:'10 kg',price:420,originalPrice:465,category:'Staples & Dal',inStock:true,emoji:'🌾'},
+ {id:2,name:'Fortune Sunlite Sunflower Oil',weight:'1 Litre',price:145,originalPrice:165,category:'Oils & Ghee',inStock:true,emoji:'🛢️'},
+ {id:3,name:'Tata Salt Vacuum Evaporated',weight:'1 kg',price:28,originalPrice:30,category:'Staples & Dal',inStock:true,emoji:'🧂'},
+ {id:4,name:'Unpolished Toor Dal Premium',weight:'1 kg',price:145,originalPrice:160,category:'Staples & Dal',inStock:true,emoji:'🫘'},
+ {id:5,name:'Surf Excel Easy Wash Detergent',weight:'1 kg',price:135,originalPrice:150,category:'Household',inStock:true,emoji:'🧺'},
+ {id:6,name:'Parle-G Gold Family Pack',weight:'800 g',price:80,originalPrice:90,category:'Snacks & Drinks',inStock:true,emoji:'🍪'},
+ {id:7,name:'Amul Pure Cow Ghee Tin',weight:'500 ml',price:335,originalPrice:360,category:'Oils & Ghee',inStock:false,emoji:'🧈'},
+ {id:8,name:'Amul Taaza Toned Milk Pouch',weight:'500 ml',price:28,originalPrice:28,category:'Dairy & Bread',inStock:true,emoji:'🥛'}
+];
+const DEF_COUPONS=[
+ {code:'BASAVA10',type:'pct',value:10,min:299,max:50},
+ {code:'WELCOME30',type:'flat',value:30,min:199}
+];
+const LEGACY={Staples:'Staples & Dal',Oils:'Oils & Ghee',Snacks:'Snacks & Drinks',Dairy:'Dairy & Bread'};
+const clone=o=>JSON.parse(JSON.stringify(o));
 
-        function verifyOwnerPin() {
-            const pin = document.getElementById("ownerPinInput").value;
-            if (pin === "1234" || pin === "2026") { // Default default PIN
-                localStorage.setItem("basava_owner_logged_in", "true");
-                document.getElementById("adminNavBtn").classList.remove("hide");
-                closeOwnerModal();
-                switchView('admin');
-                alert("Owner Dashboard Unlocked Successfully!");
-            } else {
-                alert("Incorrect PIN. Default PIN is 1234.");
-            }
-        }
+let cfg,products,orders,cart={},applied='',curCat='All',adminFilter='all',photo='',loc=null;
 
-        function logoutOwner() {
-            localStorage.removeItem("basava_owner_logged_in");
-            document.getElementById("adminNavBtn").classList.add("hide");
-            switchView('storefront');
-            alert("Logged out of Admin Mode.");
-        }
+function boot(){
+  const oc=load('kirana_config',{});
+  if(oc.minFreeDelivery!=null&&oc.minFree==null)oc.minFree=oc.minFreeDelivery;
+  cfg=Object.assign({name:'Shree Basava Kirana Store',whatsapp:'919876543210',minFree:300,fee:30,shopOpen:true,adminPin:'',email:'',cats:clone(DEF_CATS),coupons:clone(DEF_COUPONS)},oc);
+  if(/ganesh/i.test(cfg.name))cfg.name='Shree Basava Kirana Store';
+  delete cfg.recoveryKey;delete cfg.minFreeDelivery;
+  if(!Array.isArray(cfg.cats)||!cfg.cats.length)cfg.cats=clone(DEF_CATS);
+  if(!Array.isArray(cfg.coupons))cfg.coupons=clone(DEF_COUPONS);
+  cfg.minFree=+cfg.minFree||0;cfg.fee=+cfg.fee||0;
+  cfg.shopOpen=cfg.shopOpen!==false;
 
-        function showForgotPin() {
-            document.getElementById("pinLoginSection").classList.add("hide");
-            document.getElementById("gmailRecoverySection").classList.remove("hide");
-        }
+  let p=load('kirana_products',[]);
+  if(!Array.isArray(p))p=[];
+  p=p.filter(x=>x&&x.name&&+x.price>0).map(x=>({...x,category:LEGACY[x.category]||x.category||cfg.cats[0]}));
+  products=p.length?p:clone(DEF_PRODUCTS);
+  products.forEach(x=>{if(!cfg.cats.includes(x.category))cfg.cats.push(x.category)});
+  orders=load('kirana_orders',[]);if(!Array.isArray(orders))orders=[];
+  persist();
+}
+const persist=()=>{store('kirana_config',cfg);store('kirana_products',products)};
 
-        function backToPinLogin() {
-            document.getElementById("gmailRecoverySection").classList.add("hide");
-            document.getElementById("pinLoginSection").classList.remove("hide");
-        }
+function applyCfg(){
+  $('store-title').textContent=cfg.name;
+  document.title=cfg.name+' - 1 Hour Grocery Delivery';
+  const isOpen=cfg.shopOpen!==false;
+  if($('store-status')){
+    $('store-status').innerHTML=isOpen
+      ?'<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span>Open • Delivery Within 1 Hour</span>'
+      :'<span class="w-2 h-2 rounded-full bg-rose-500"></span><span class="text-rose-600 font-bold">Closed • Currently Not Taking Orders</span>';
+  }
+  $('ann').textContent=isOpen
+    ?`Express Home Delivery in 1 Hour | Free Delivery above ₹${cfg.minFree}`
+    :`🔴 Store is Currently Closed | Free Delivery above ₹${cfg.minFree}`;
+  renderLiveCoupons();
+}
 
-        function sendRecoveryPin() {
-            const email = document.getElementById("recoveryEmailInput").value;
-            if (email) {
-                alert("Recovery PIN instructions sent to " + email + ". (Demo PIN: 1234)");
-                backToPinLogin();
-            } else {
-                alert("Please enter a valid Gmail address.");
-            }
-        }
+function renderLiveCoupons(){
+  const el=$('live-coupons-bar');if(!el)return;
+  if(!cfg.coupons||!cfg.coupons.length){el.innerHTML='';return}
+  el.innerHTML=`<div class="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/80 rounded-2xl p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div class="flex items-center gap-2.5 min-w-0">
+      <div class="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0"><i class="fa-solid fa-tags"></i></div>
+      <div class="min-w-0">
+        <p class="text-xs font-extrabold text-slate-900">Available Store Offers & Coupons</p>
+        <div class="flex flex-wrap gap-1.5 mt-1">${cfg.coupons.map(c=>`<button onclick="openCoupons()" class="inline-flex items-center gap-1.5 bg-white border border-amber-300 px-2.5 py-0.5 rounded-lg text-[11px] font-bold text-slate-800 cursor-pointer hover:bg-amber-100"><span class="text-emerald-700 font-extrabold">${esc(c.code)}</span><span class="text-slate-500">• ${c.type==='pct'?c.value+'% OFF':'₹'+c.value+' OFF'} (above ₹${c.min})</span></button>`).join('')}</div>
+      </div>
+    </div>
+    <button onclick="openCoupons()" class="btn bg-amber-500 hover:bg-amber-600 text-slate-950 !py-2 text-xs shrink-0">View All Offers</button>
+  </div>`;
+}
 
-        // 2. Firebase Real-Time Sync
-        function fetchFirebaseData() {
-            fetch(`${FIREBASE_URL}/store.json`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data) {
-                        if (data.products) products = data.products;
-                        if (data.config) storeConfig = data.config;
-                    }
-                    renderStorefront();
-                    renderAdminStock();
-                    applyStoreConfig();
-                })
-                .catch(err => console.log("Using local fallback state", err));
-        }
+/* ---------- PIN fields with eye icon ---------- */
+document.querySelectorAll('[data-pin]').forEach(d=>{
+  d.classList.add('relative');
+  d.innerHTML=`<input type="password" id="${d.dataset.pin}" inputmode="numeric" maxlength="4" placeholder="${d.dataset.ph||'••••'}" oninput="this.value=this.value.replace(/\\D/g,'')" class="w-full px-4 py-3 pr-11 border border-slate-200 rounded-xl text-center tracking-[0.6em] text-xl font-extrabold bg-slate-50 focus:outline-none focus:border-emerald-500 placeholder:tracking-normal placeholder:text-sm placeholder:font-semibold"><button type="button" onclick="eye(this)" class="absolute inset-y-0 right-0 pr-3.5 text-slate-400 cursor-pointer"><i class="fa-solid fa-eye"></i></button>`;
+});
+function eye(b){const i=b.previousElementSibling,show=i.type==='password';i.type=show?'text':'password';b.innerHTML=`<i class="fa-solid fa-eye${show?'-slash':''}"></i>`}
 
-        function syncToFirebase() {
-            const payload = { products: products, config: storeConfig };
-            fetch(`${FIREBASE_URL}/store.json`, {
-                method: 'PUT',
-                body: JSON.stringify(payload)
-            }).catch(err => console.error("Sync error", err));
-        }
+/* ---------- Storefront ---------- */
+function renderCats(){
+  const all=['All Items',...cfg.cats];
+  $('cats').innerHTML=all.map((c,i)=>{const on=i===0?curCat==='All':c===curCat;
+    return `<button onclick="setCat(${i})" class="px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap cursor-pointer ${on?'bg-emerald-600 text-white':'bg-slate-100 text-slate-600'}">${esc(c)}</button>`}).join('');
+}
+function setCat(i){curCat=i?cfg.cats[i-1]:'All';renderCats();filterProducts()}
+function filterProducts(){
+  const q=$('search').value.toLowerCase().trim();
+  renderProducts(products.filter(p=>(curCat==='All'||p.category===curCat)&&(p.name.toLowerCase().includes(q)||p.category.toLowerCase().includes(q))));
+}
+function renderProducts(items){
+  $('pcount').textContent=`Showing ${items.length} items`;
+  if(!items.length){$('grid').innerHTML='<div class="col-span-full text-center py-16 text-slate-400 font-semibold">No grocery items match your search.</div>';return}
+  $('grid').innerHTML=items.map(p=>{
+    const ok=p.inStock!==false,q=cart[p.id]||0;
+    const off=p.originalPrice>p.price?Math.round((p.originalPrice-p.price)/p.originalPrice*100):0;
+    const pic=p.image?`<img src="${esc(p.image)}" alt="" onerror="this.onerror=null;this.src=PH" class="w-full h-full object-cover ${ok?'':'grayscale opacity-50'}">`
+      :`<div class="w-full h-full flex items-center justify-center text-5xl ${ok?'':'grayscale opacity-50'}">${p.emoji||'🛒'}</div>`;
+    return `<div class="bg-white border border-slate-100 rounded-2xl p-3 shadow-sm flex flex-col justify-between">
+      <div>
+        <div class="relative bg-slate-100 rounded-xl overflow-hidden mb-2.5 aspect-square">${pic}
+          ${off&&ok?`<span class="absolute top-2 left-2 bg-emerald-600 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-md">${off}% OFF</span>`:''}
+          <span class="absolute bottom-2 right-2 bg-slate-900/75 text-white text-[10px] font-bold px-2 py-0.5 rounded-md">${esc(p.weight)}</span>
+          ${ok?'':'<div class="absolute inset-0 bg-slate-900/45 flex items-center justify-center"><span class="bg-rose-600 text-white text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-lg">Out of Stock</span></div>'}
+        </div>
+        <h4 class="font-bold text-xs sm:text-sm text-slate-800 line-clamp-2 leading-snug mb-2">${esc(p.name)}</h4>
+      </div>
+      <div>
+        <div class="flex items-baseline gap-1.5 mb-2.5"><span class="text-emerald-700 font-black">₹${p.price}</span>${off?`<span class="text-slate-400 text-[11px] line-through">₹${p.originalPrice}</span>`:''}</div>
+        ${!ok?'<button disabled class="w-full bg-slate-200 text-slate-500 text-xs font-extrabold py-2 rounded-xl">Out of Stock</button>'
+        :q?`<div class="flex items-center justify-between bg-emerald-600 text-white rounded-xl py-1 px-2"><button onclick="changeQty(${p.id},-1)" class="w-7 h-7 rounded-lg bg-emerald-700 font-black cursor-pointer">-</button><span class="text-xs font-extrabold">${q}</span><button onclick="changeQty(${p.id},1)" class="w-7 h-7 rounded-lg bg-emerald-700 font-black cursor-pointer">+</button></div>`
+        :`<button onclick="changeQty(${p.id},1)" class="w-full bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white border border-emerald-200 text-xs font-extrabold py-2 rounded-xl transition cursor-pointer"><i class="fa-solid fa-plus text-[10px]"></i> ADD</button>`}
+      </div></div>`}).join('');
+}
 
-        function applyStoreConfig() {
-            document.getElementById("storeTitleDisp").innerText = storeConfig.name;
-            document.getElementById("topBannerText").innerText = `⚡ ${storeConfig.deliveryTime} | Open 6:00 AM - 10:00 PM`;
-            document.getElementById("couponDisplayDesc").innerHTML = `Use coupon <span class="bg-black/30 px-2 py-0.5 rounded font-mono font-bold text-yellow-300">${storeConfig.couponCode}</span> to get ${storeConfig.couponDiscount}% instant discount!`;
-            
-            // Populate settings inputs
-            document.getElementById("settingStoreName").value = storeConfig.name;
-            document.getElementById("settingPhone").value = storeConfig.phone;
-            document.getElementById("settingDeliveryTime").value = storeConfig.deliveryTime;
-            document.getElementById("settingCouponCode").value = storeConfig.couponCode;
-            document.getElementById("settingCouponDesc").value = storeConfig.couponDesc;
-            document.getElementById("settingCouponDiscount").value = storeConfig.couponDiscount;
-        }
+/* ---------- Cart & coupons ---------- */
+function changeQty(id,d){
+  const p=products.find(x=>x.id==id);if(!p||p.inStock===false)return;
+  cart[id]=(cart[id]||0)+d;if(cart[id]<=0)delete cart[id];
+  filterProducts();updateCart();
+}
+function couponValue(c,sub){return c.type==='pct'?Math.min(Math.round(sub*c.value/100),c.max>0?c.max:Infinity):Math.min(c.value,sub)}
+function cDesc(c){return c.type==='pct'?`Get ${c.value}% off${c.max>0?` up to ₹${c.max}`:''} on orders above ₹${c.min}`:`Flat ₹${c.value} off on orders above ₹${c.min}`}
+function calc(){
+  let sub=0,mrp=0,n=0;
+  for(const id of Object.keys(cart)){
+    const p=products.find(x=>x.id==id);
+    if(!p||p.inStock===false){delete cart[id];continue}
+    n+=cart[id];sub+=p.price*cart[id];mrp+=Math.max(p.originalPrice||0,p.price)*cart[id];
+  }
+  let disc=0;const c=cfg.coupons.find(x=>x.code===applied);
+  if(c&&sub>=c.min)disc=couponValue(c,sub);else if(applied)applied='';
+  const fee=(!sub||sub>=cfg.minFree)?0:cfg.fee;
+  return{n,sub,mrp,mrpSave:mrp-sub,disc,fee,total:sub-disc+fee,save:mrp-sub+disc};
+}
+function updateCart(){
+  const t=calc();
+  $('hdr-count').textContent=t.n;
+  $('fbar').classList.toggle('hidden',!t.n);
+  $('fbar-items').textContent=t.n+(t.n===1?' Item':' Items');
+  $('fbar-total').textContent='₹'+t.total;
+  $('fbar-save').textContent=t.save>0?`🎉 You save ₹${t.save}`:'⚡ Delivery in 1 Hour';
+  $('checkout').classList.toggle('hidden',!t.n);
+  $('cart-footer').classList.toggle('hidden',!t.n);
+  $('place-label').textContent=cfg.shopOpen===false?'🔴 Store Currently Closed':`Place Order • ₹${t.total}`;
+  const pct=cfg.minFree?Math.min(100,Math.round(t.sub/cfg.minFree*100)):100;
+  $('prog-bar').style.width=pct+'%';$('prog-pct').textContent=pct+'%';
+  $('prog-text').textContent=t.sub>=cfg.minFree?'🎉 Free 1-Hour Home Delivery Unlocked!':`Add ₹${cfg.minFree-t.sub} more for FREE delivery`;
 
-        // 3. View Switcher
-        function switchView(view) {
-            if (view === 'storefront') {
-                document.getElementById("storefrontView").classList.remove("hide");
-                document.getElementById("adminView").classList.add("hide");
-            } else if (view === 'admin') {
-                if (localStorage.getItem("basava_owner_logged_in") !== "true") {
-                    openOwnerModal();
-                    return;
-                }
-                document.getElementById("storefrontView").classList.add("hide");
-                document.getElementById("adminView").classList.remove("hide");
-            }
-        }
+  if(!t.n){
+    $('cart-items').innerHTML='<div class="text-center py-16 text-slate-400"><i class="fa-solid fa-basket-shopping text-4xl mb-2 text-slate-300"></i><p class="text-xs font-semibold">Your cart is empty</p></div>';
+    $('coupon-row').innerHTML='';$('bill').innerHTML='';return;
+  }
+  $('cart-items').innerHTML=Object.keys(cart).map(id=>{
+    const p=products.find(x=>x.id==id),q=cart[id];
+    const th=p.image?`<img src="${esc(p.image)}" onerror="this.onerror=null;this.src=PH" class="w-11 h-11 object-cover rounded-lg bg-slate-100 shrink-0">`:`<div class="w-11 h-11 rounded-lg bg-slate-100 flex items-center justify-center text-2xl shrink-0">${p.emoji||'🛒'}</div>`;
+    return `<div class="flex items-center justify-between bg-white border border-slate-100 p-3 rounded-xl gap-2">
+      <div class="flex items-center gap-2.5 min-w-0 flex-1">${th}<div class="min-w-0"><h4 class="text-xs font-bold truncate">${esc(p.name)}</h4><p class="text-[11px] text-slate-500">${esc(p.weight)} • ₹${p.price} × ${q} = <b class="text-slate-800">₹${p.price*q}</b></p></div></div>
+      <div class="flex items-center gap-1.5 bg-emerald-600 text-white p-1 rounded-lg shrink-0"><button onclick="changeQty(${p.id},-1)" class="w-6 h-6 font-bold cursor-pointer">-</button><span class="text-xs font-extrabold w-4 text-center">${q}</span><button onclick="changeQty(${p.id},1)" class="w-6 h-6 font-bold cursor-pointer">+</button></div></div>`}).join('');
 
-        function switchAdminTab(tab) {
-            document.getElementById("adminContentStock").classList.add("hide");
-            document.getElementById("adminContentOrders").classList.add("hide");
-            document.getElementById("adminContentSettings").classList.add("hide");
+  // Coupon row
+  const c=cfg.coupons.find(x=>x.code===applied);
+  if(c){
+    $('coupon-row').innerHTML=`<div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-3 flex items-center gap-3"><i class="fa-solid fa-circle-check text-emerald-600 text-xl"></i><div class="flex-1 min-w-0"><p class="text-sm font-extrabold text-emerald-800">'${esc(c.code)}' applied</p><p class="text-xs text-emerald-700">You saved ₹${t.disc} with this coupon</p></div><button onclick="removeCoupon()" class="text-xs font-bold text-rose-600 cursor-pointer">Remove</button></div>`;
+  }else{
+    let best=null;cfg.coupons.forEach(k=>{if(t.sub>=k.min){const v=couponValue(k,t.sub);if(!best||v>best.v)best={k,v}}});
+    $('coupon-row').innerHTML=`<button onclick="openCoupons()" class="w-full bg-white border border-slate-200 rounded-2xl p-3 flex items-center gap-3 text-left cursor-pointer"><span class="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center"><i class="fa-solid fa-tags"></i></span><span class="flex-1 min-w-0"><b class="block text-sm">Apply Coupon</b><span class="text-xs ${best?'text-emerald-700 font-bold':'text-slate-500'}">${best?`Save ₹${best.v} with ${esc(best.k.code)}`:'View available offers'}</span></span><i class="fa-solid fa-chevron-right text-slate-400 text-xs"></i></button>`;
+  }
+  // Bill with discount rows
+  const row=(a,b,cl='')=>`<div class="flex justify-between ${cl}"><span>${a}</span><span class="font-bold">${b}</span></div>`;
+  $('bill').innerHTML=`<div class="card space-y-1.5 text-xs text-slate-600"><h4 class="font-extrabold text-sm text-slate-900 mb-1">Bill Details</h4>
+    ${row('Item total (MRP)','₹'+t.mrp)}
+    ${t.mrpSave>0?row('Product discount','−₹'+t.mrpSave,'text-emerald-600'):''}
+    ${t.disc>0?row('Coupon discount ('+esc(applied)+')','−₹'+t.disc,'text-emerald-600'):''}
+    ${row('Delivery fee',t.fee?'₹'+t.fee:'<span class="text-emerald-600">FREE</span>')}
+    <div class="flex justify-between text-sm font-extrabold text-slate-900 border-t border-dashed border-slate-200 pt-2"><span>To Pay</span><span class="text-emerald-700 text-base">₹${t.total}</span></div>
+    ${t.save>0?`<div class="bg-emerald-50 text-emerald-700 font-bold rounded-lg px-3 py-2 text-center mt-1">🎉 You're saving ₹${t.save} on this order</div>`:''}</div>`;
+}
+function toggleCart(){
+  const d=$('cart-drawer');d.classList.toggle('hidden');
+  if(!d.classList.contains('hidden')){updateCart();if(!loc&&Object.keys(cart).length)detectLocation()}
+}
+function openCoupons(){
+  const t=calc();
+  $('coupon-list').innerHTML=cfg.coupons.length?cfg.coupons.map(c=>{const ok=t.sub>=c.min;
+    return `<div class="border border-dashed ${ok?'border-emerald-400 bg-emerald-50/50':'border-slate-300'} rounded-2xl p-3 flex items-center gap-3"><div class="flex-1 min-w-0"><span class="inline-block bg-emerald-600 text-white text-xs font-extrabold tracking-wider px-2.5 py-1 rounded-md">${esc(c.code)}</span><p class="text-xs text-slate-600 mt-1.5">${cDesc(c)}</p>${ok?'':`<p class="text-[11px] text-amber-700 font-bold mt-0.5">Add ₹${c.min-t.sub} more to unlock</p>`}</div><button ${ok?'':'disabled'} onclick="applyCoupon('${esc(c.code)}')" class="btn ${ok?'bg-emerald-600 text-white':'bg-slate-200 text-slate-400'}">APPLY</button></div>`}).join('')
+    :'<p class="text-center text-sm text-slate-400 py-6">No offers available right now.</p>';
+  $('coupon-input').value='';$('coupon-sheet').classList.remove('hidden');
+}
+function closeCoupons(){$('coupon-sheet').classList.add('hidden')}
+function applyCoupon(code){
+  code=String(code).trim().toUpperCase();const c=cfg.coupons.find(x=>x.code===code),t=calc();
+  if(!c)return toast('Invalid coupon code');
+  if(t.sub<c.min)return toast(`Add ₹${c.min-t.sub} more to use ${code}`);
+  applied=code;closeCoupons();updateCart();toast(`🎉 ${code} applied – you saved ₹${couponValue(c,t.sub)}`);
+}
+function removeCoupon(){applied='';updateCart()}
 
-            document.getElementById("adminTabStock").className = "pb-3 text-sm font-medium text-gray-500 hover:text-gray-900 transition";
-            document.getElementById("adminTabOrders").className = "pb-3 text-sm font-medium text-gray-500 hover:text-gray-900 transition";
-            document.getElementById("adminTabSettings").className = "pb-3 text-sm font-medium text-gray-500 hover:text-gray-900 transition";
+/* ---------- Live location ---------- */
+function setLocMsg(m,k){const e=$('loc-msg');e.textContent=m;e.className='text-[11px] mt-1 font-semibold '+(k==='ok'?'text-emerald-600':k==='warn'?'text-amber-700':'text-slate-500')}
+function detectLocation(){
+  if(!navigator.geolocation)return setLocMsg('Location not supported – please type your address','warn');
+  setLocMsg('📍 Detecting your exact location…');
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    loc={lat:pos.coords.latitude,lng:pos.coords.longitude};
+    let a='';
+    try{const ctl=new AbortController();setTimeout(()=>ctl.abort(),6000);
+      const r=await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${loc.lat}&lon=${loc.lng}`,{signal:ctl.signal});
+      a=(await r.json()).display_name||'';}catch(e){}
+    $('cust-address').value=a||`Live location (${loc.lat.toFixed(5)}, ${loc.lng.toFixed(5)})`;
+    setLocMsg('✓ Exact location detected – it will be sent with your order','ok');
+  },err=>setLocMsg(err.code===1?'Location permission denied – allow it in browser settings or type your address':'Could not get location – please type your address','warn'),
+  {enableHighAccuracy:true,timeout:15000,maximumAge:0});
+}
 
-            if (tab === 'stock') {
-                document.getElementById("adminContentStock").classList.remove("hide");
-                document.getElementById("adminTabStock").className = "pb-3 text-sm font-bold text-emerald-600 border-b-2 border-emerald-600 transition";
-            } else if (tab === 'orders') {
-                document.getElementById("adminContentOrders").classList.remove("hide");
-                document.getElementById("adminTabOrders").className = "pb-3 text-sm font-bold text-emerald-600 border-b-2 border-emerald-600 transition";
-            } else if (tab === 'settings') {
-                document.getElementById("adminContentSettings").classList.remove("hide");
-                document.getElementById("adminTabSettings").className = "pb-3 text-sm font-bold text-emerald-600 border-b-2 border-emerald-600 transition";
-            }
-        }
+function placeOrder(){
+  if(cfg.shopOpen===false)return toast('🔴 Store is currently closed for orders');
+  const t=calc();if(!t.n)return toast('Your cart is empty');
+  const name=$('cust-name').value.trim(),phone=$('cust-phone').value.trim(),addr=$('cust-address').value.trim();
+  if(!name)return toast('Please enter your name');
+  if(!/^\d{10}$/.test(phone))return toast('Enter a valid 10-digit mobile number');
+  if(!addr&&!loc){toast('Please allow location or type your address');detectLocation();return}
+  const pay=document.querySelector('input[name=pay]:checked').value;
+  const lines=Object.keys(cart).map((id,i)=>{const p=products.find(x=>x.id==id);return `${i+1}. ${p.name} (${p.weight}) x ${cart[id]} = ₹${p.price*cart[id]}`});
+  let m=`🛒 *New Order - ${cfg.name}*\n\n👤 *Name:* ${name}\n📞 *Phone:* ${phone}\n`;
+  if(addr)m+=`📍 *Address:* ${addr}\n`;
+  if(loc)m+=`🗺️ *Exact Location:* https://maps.google.com/?q=${loc.lat},${loc.lng}\n`;
+  m+=`\n*Items:*\n${lines.join('\n')}\n\n🧾 *Item Total (MRP):* ₹${t.mrp}\n`;
+  if(t.mrpSave>0)m+=`🏷️ *Product Discount:* -₹${t.mrpSave}\n`;
+  if(t.disc>0)m+=`🎟️ *Coupon ${applied}:* -₹${t.disc}\n`;
+  m+=`🛵 *Delivery:* ${t.fee?'₹'+t.fee:'FREE'}\n💰 *Total Payable:* ₹${t.total}\n💳 *Payment:* ${pay}\n⏱️ *Requested:* Delivery within 1 Hour`;
+  orders.unshift({id:Date.now(),date:new Date().toLocaleString(),customer:`${name} (${phone})`,address:addr||'Live location',map:loc?`https://maps.google.com/?q=${loc.lat},${loc.lng}`:'',pay,total:t.total,
+    items:Object.keys(cart).map(id=>{const p=products.find(x=>x.id==id);return{name:p.name,weight:p.weight,price:p.price,quantity:cart[id]}})});
+  store('kirana_orders',orders);
+  window.open(`https://wa.me/${String(cfg.whatsapp).replace(/\D/g,'')}?text=${encodeURIComponent(m)}`,'_blank');
+  cart={};applied='';filterProducts();updateCart();toggleCart();toast('✅ Order sent on WhatsApp');
+}
 
-        // 4. Storefront Rendering
-        function renderStorefront() {
-            const grid = document.getElementById("productGrid");
-            grid.innerHTML = "";
+/* ---------- Owner login (Prompts for PIN each time, Reset on Forgot PIN) ---------- */
+function view(v){['login','setup','recover'].forEach(x=>$('v-'+x).classList.toggle('hidden',x!==v))}
+function openLogin(){view(cfg.adminPin?'login':'setup');$('login-modal').classList.remove('hidden')}
+function closeLogin(){$('login-modal').classList.add('hidden');['login-pin','setup-pin','rec-pin'].forEach(i=>$(i).value='');$('setup-email').value='';$('rec-email').value=''}
+const validPin=p=>/^\d{4}$/.test(p),validMail=e=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+function doLogin(){
+  if($('login-pin').value===String(cfg.adminPin)){closeLogin();openDash()}
+  else{toast('❌ Incorrect PIN');$('login-pin').value=''}
+}
+function doSetup(){
+  const pin=$('setup-pin').value,mail=$('setup-email').value.trim().toLowerCase();
+  if(!validPin(pin))return toast('Enter a 4-digit PIN');
+  if(!validMail(mail))return toast('Enter a valid Gmail address');
+  cfg.adminPin=pin;cfg.email=mail;persist();closeLogin();openDash();toast('✅ Owner access created');
+}
+function doRecover(){
+  const mail=$('rec-email').value.trim().toLowerCase(),pin=$('rec-pin').value;
+  if(!cfg.email||mail!==cfg.email)return toast('This Gmail is not registered for this store');
+  if(!validPin(pin))return toast('Enter a new 4-digit PIN');
+  cfg.adminPin=pin;persist();closeLogin();openDash();toast('✅ PIN reset successfully');
+}
 
-            const filtered = currentCategory === 'All' ? products : products.filter(p => p.category === currentCategory);
+/* ---------- Admin ---------- */
+function openDash(){$('admin').classList.remove('hidden');tab('inv');renderAdmin();renderSettings()}
+function closeDash(){$('admin').classList.add('hidden');filterProducts();updateCart()}
+function tab(n){['inv','ord','set'].forEach(t=>{
+  $('at-'+t).classList.toggle('hidden',t!==n);
+  $('tb-'+t).className='btn text-xs '+(t===n?'bg-emerald-600 text-white':'bg-white text-slate-600 border border-slate-200');
+})}
+function refreshAll(){persist();applyCfg();renderCats();filterProducts();updateCart();renderAdmin();renderSettings()}
 
-            filtered.forEach(p => {
-                const isOut = p.stock === "Out of Stock";
-                grid.innerHTML += `
-                    <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex flex-col justify-between transition hover:shadow-md">
-                        <div>
-                            <div class="flex justify-between items-start mb-2">
-                                <span class="text-[10px] bg-emerald-50 text-emerald-700 font-semibold px-2 py-0.5 rounded-full">${p.category}</span>
-                                <span class="text-[10px] ${isOut ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'} font-semibold px-2 py-0.5 rounded-full">${p.stock}</span>
-                            </div>
-                            <h4 class="font-bold text-gray-900 text-sm mb-1 line-clamp-2">${p.name}</h4>
-                            <div class="flex items-baseline gap-2 mb-3">
-                                <span class="text-base font-extrabold text-emerald-700">₹${p.price}</span>
-                                ${p.save > 0 ? `<span class="text-xs text-gray-400 line-through">₹${p.price + p.save}</span>` : ''}
-                            </div>
-                        </div>
-                        <button onclick="addToCart('${p.id}')" ${isOut ? 'disabled' : ''} class="w-full ${isOut ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow'} text-xs font-bold py-2 rounded-xl transition">
-                            <i class="fa-solid fa-cart-plus mr-1"></i> ${isOut ? 'Out of Stock' : 'Add to Cart'}
-                        </button>
-                    </div>
-                `;
-            });
-        }
+function handlePhoto(e){
+  const f=e.target.files[0];if(!f)return;const r=new FileReader();
+  r.onload=ev=>{const img=new Image();img.onload=()=>{
+    const m=360;let w=img.width,h=img.height;
+    if(w>h&&w>m){h*=m/w;w=m}else if(h>m){w*=m/h;h=m}
+    const cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);
+    photo=cv.toDataURL('image/jpeg',0.72);$('prev-img').src=photo;
+    $('prev-wrap').classList.remove('hidden');$('prev-wrap').classList.add('flex');$('up-label').textContent='Photo Selected ✓';
+  };img.src=ev.target.result};r.readAsDataURL(f);
+}
+function addProduct(){
+  const name=$('n-name').value.trim(),weight=$('n-weight').value.trim(),price=parseFloat($('n-price').value);
+  if(!name||!weight||!(price>0))return toast('Fill Item Name, Pack Size and Selling Price');
+  const mrp=parseFloat($('n-mrp').value)||Math.round(price*1.1);
+  products.unshift({id:Date.now(),name,weight,price,originalPrice:mrp,category:$('n-cat').value,inStock:$('n-stock').value==='1',image:photo||$('n-url').value.trim()||'',emoji:'🛒'});
+  ['n-name','n-weight','n-price','n-mrp','n-url'].forEach(i=>$(i).value='');
+  photo='';$('prev-wrap').classList.add('hidden');$('up-label').textContent='Upload / Take Photo';
+  refreshAll();toast('✅ Item added');
+}
+function setFilter(m){adminFilter=m;renderAdmin()}
+function renderAdmin(){
+  $('a-count').textContent=products.length;$('o-count').textContent=orders.length;
+  $('n-cat').innerHTML=cfg.cats.map(c=>`<option>${esc(c)}</option>`).join('');
+  ['all','in','out'].forEach(m=>$('sf-'+m).className='py-1.5 rounded-lg text-[11px] font-bold cursor-pointer '+(m===adminFilter?'bg-white text-slate-900 shadow-sm':'text-slate-600'));
+  const list=products.filter(p=>adminFilter==='in'?p.inStock!==false:adminFilter==='out'?p.inStock===false:true);
+  $('a-list').innerHTML=list.length?list.map(p=>{const ok=p.inStock!==false;
+    const th=p.image?`<img src="${esc(p.image)}" onerror="this.onerror=null;this.src=PH" class="w-12 h-12 rounded-xl object-cover border border-slate-200 shrink-0">`:`<div class="w-12 h-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-2xl shrink-0">${p.emoji||'🛒'}</div>`;
+    return `<div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div class="flex items-center gap-3 min-w-0 flex-1">${th}<div class="min-w-0"><span class="text-[10px] font-extrabold px-2 py-0.5 rounded-md ${ok?'bg-emerald-100 text-emerald-800':'bg-rose-100 text-rose-700'}">${ok?'IN STOCK':'OUT OF STOCK'}</span><span class="text-[10px] text-slate-500 font-semibold ml-1">${esc(p.category)} • ${esc(p.weight)}</span><h4 class="font-bold text-sm truncate mt-0.5">${esc(p.name)}</h4></div></div>
+      <div class="flex flex-wrap items-center gap-2 sm:justify-end shrink-0">
+        <div class="flex items-center gap-1 bg-white border border-slate-200 rounded-xl px-2 py-1"><span class="text-xs font-bold text-slate-400">₹</span><input type="number" id="pr-${p.id}" value="${p.price}" class="w-16 text-xs font-extrabold focus:outline-none"></div>
+        <button onclick="setPrice(${p.id})" class="btn bg-blue-600 text-white !py-1.5 text-xs w-20 text-center">Save ₹</button>
+        <button onclick="toggleStock(${p.id})" class="btn !py-1.5 text-xs w-24 text-center ${ok?'bg-amber-100 text-amber-900':'bg-emerald-600 text-white'}">${ok?'Mark Out':'Mark In'}</button>
+        <button onclick="delProduct(${p.id})" class="btn bg-rose-50 text-rose-600 !py-1.5 text-xs"><i class="fa-solid fa-trash"></i></button>
+      </div></div>`}).join(''):'<p class="text-xs text-slate-400 text-center py-6">No items in this filter.</p>';
+  $('o-list').innerHTML=orders.length?orders.map(o=>`<div class="bg-slate-50 border border-slate-200/80 p-3.5 rounded-xl space-y-1.5 text-xs">
+    <div class="flex justify-between gap-2 font-bold"><span>👤 ${esc(o.customer)}</span><span class="text-slate-500 font-normal">${esc(o.date)}</span></div>
+    <p class="text-slate-600">📍 ${esc(o.address)}${o.map?` • <a href="${esc(o.map)}" target="_blank" class="text-blue-600 font-bold">Open map</a>`:''}</p>
+    <div class="bg-white p-2.5 rounded-lg border border-slate-200/60 space-y-1">${o.items.map(i=>`<div class="flex justify-between gap-2"><span>${esc(i.name)} (${esc(i.weight)}) × ${i.quantity}</span><span class="font-bold">₹${i.price*i.quantity}</span></div>`).join('')}</div>
+    <div class="flex justify-between font-extrabold"><span>${esc(o.pay||'')}</span><span class="text-emerald-700">Total ₹${o.total}</span></div></div>`).join(''):'<p class="text-xs text-slate-400 text-center py-8">No orders yet.</p>';
+}
+function setPrice(id){const v=parseFloat($('pr-'+id).value),p=products.find(x=>x.id==id);if(!(v>0)||!p)return toast('Enter a valid price');p.price=v;refreshAll();toast('✅ Price updated')}
+function toggleStock(id){const p=products.find(x=>x.id==id);if(p){p.inStock=p.inStock===false;refreshAll();toast(p.inStock?'✅ Item marked In Stock':'❌ Item marked Out of Stock')}}
+function delProduct(id){
+  if(products.length<=1)return toast('Keep at least one item in the store');
+  if(confirm('Delete this item?')){products=products.filter(x=>x.id!=id);delete cart[id];refreshAll()}
+}
+function clearOrders(){if(confirm('Clear all order records?')){orders=[];store('kirana_orders',orders);renderAdmin()}}
 
-        function filterCategory(cat) {
-            currentCategory = cat;
-            renderStorefront();
-        }
+/* ---------- Admin settings ---------- */
+function setShopStatus(open){
+  cfg.shopOpen=!!open;
+  refreshAll();
+  toast(cfg.shopOpen?'🟢 Shop marked Open':'🔴 Shop marked Closed');
+}
+function renderSettings(){
+  $('s-name').value=cfg.name;$('s-wa').value=cfg.whatsapp;$('s-fee').value=cfg.fee;$('s-min').value=cfg.minFree;$('s-email').value=cfg.email||'';$('s-pin').value='';
+  const isOpen=cfg.shopOpen!==false;
+  if($('st-open')&&$('st-close')){
+    $('st-open').className='btn text-xs !py-2 '+(isOpen?'bg-emerald-600 text-white shadow':'bg-slate-100 text-slate-600');
+    $('st-close').className='btn text-xs !py-2 '+(!isOpen?'bg-rose-600 text-white shadow':'bg-slate-100 text-slate-600');
+  }
+  $('s-cats').innerHTML=cfg.cats.map((c,i)=>`<span class="inline-flex items-center gap-2 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-full pl-3 pr-1.5 py-1 text-xs font-bold">${esc(c)}<button onclick="delCat(${i})" class="w-5 h-5 rounded-full bg-white text-rose-600 cursor-pointer">&times;</button></span>`).join('');
+  $('s-coupons').innerHTML=cfg.coupons.length?cfg.coupons.map((c,i)=>`<div class="flex items-center justify-between gap-2 bg-slate-50 border border-slate-200 rounded-xl p-2.5"><div class="min-w-0"><b class="text-xs">${esc(c.code)}</b><p class="text-[11px] text-slate-500">${cDesc(c)}</p></div><button onclick="delCoupon(${i})" class="text-rose-600 px-2 cursor-pointer"><i class="fa-solid fa-trash"></i></button></div>`).join(''):'<p class="text-xs text-slate-400">No coupons yet.</p>';
+}
+function saveSettings(){
+  const name=$('s-name').value.trim(),wa=$('s-wa').value.replace(/\D/g,'');
+  if(!name||wa.length<10)return toast('Enter store name and a valid WhatsApp number');
+  cfg.name=name;cfg.whatsapp=wa;cfg.fee=Math.max(0,+$('s-fee').value||0);cfg.minFree=Math.max(0,+$('s-min').value||0);
+  refreshAll();toast('✅ Store & Delivery Settings saved');
+}
+function saveSecurity(){
+  const pin=$('s-pin').value,mail=$('s-email').value.trim().toLowerCase();
+  if(pin&&!validPin(pin))return toast('PIN must be 4 digits');
+  if(!validMail(mail))return toast('Enter a valid Gmail address');
+  if(pin)cfg.adminPin=pin;cfg.email=mail;persist();$('s-pin').value='';toast('✅ PIN & Gmail saved');
+}
+function addCat(){
+  const n=$('new-cat').value.trim();if(!n)return toast('Enter a category name');
+  if(cfg.cats.some(c=>c.toLowerCase()===n.toLowerCase()))return toast('Category already exists');
+  cfg.cats.push(n);$('new-cat').value='';refreshAll();toast('✅ Category added');
+}
+function delCat(i){
+  const c=cfg.cats[i];
+  if(cfg.cats.length<=1)return toast('Keep at least one category');
+  if(products.some(p=>p.category===c))return toast('Move or delete items in this category first');
+  cfg.cats.splice(i,1);if(curCat===c)curCat='All';refreshAll();
+}
+function addCoupon(){
+  const code=$('nc-code').value.toUpperCase().replace(/[^A-Z0-9]/g,''),value=+$('nc-val').value,min=+$('nc-min').value||0,max=+$('nc-max').value||0,type=$('nc-type').value;
+  if(!code||!(value>0))return toast('Enter coupon code and value');
+  if(type==='pct'&&value>100)return toast('Percentage cannot exceed 100');
+  if(cfg.coupons.some(c=>c.code===code))return toast('Coupon code already exists');
+  cfg.coupons.unshift({code,type,value,min,max:type==='pct'?max:0});
+  ['nc-code','nc-val','nc-min','nc-max'].forEach(i=>$(i).value='');refreshAll();toast('✅ Coupon added');
+}
+function delCoupon(i){cfg.coupons.splice(i,1);refreshAll()}
+function exportBackup(){
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({cfg,products})],{type:'application/json'}));
+  a.download='basava-kirana-backup.json';a.click();
+}
+function importBackup(e){
+  const f=e.target.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d.products)||!d.products.length)throw 0;
+    store('kirana_products',d.products);if(d.cfg)store('kirana_config',Object.assign(cfg,d.cfg));location.reload()}catch(x){toast('Invalid backup file')}};
+  r.readAsText(f);
+}
 
-        function filterProducts() {
-            const query = document.getElementById("searchInput").value.toLowerCase();
-            const grid = document.getElementById("productGrid");
-            grid.innerHTML = "";
+/* ---------- Start ---------- */
+function init(){boot();applyCfg();renderCats();filterProducts();updateCart();if(!$('grid').children.length)throw 0}
+document.addEventListener('DOMContentLoaded',()=>{
+  try{init()}catch(e){
+    try{localStorage.removeItem('kirana_products')}catch(x){}
+    boot();applyCfg();renderCats();filterProducts();updateCart();
+  }
+});
+</script>
+<script>
+/* ===== ADD-ON: Slides, Reorder, Feedback ===== */
+let aoIdx=0,aoTimer=null,aoFbOrder=null,aoStars=0,aoFeedback=load('kirana_feedback',[]);
+if(!Array.isArray(aoFeedback))aoFeedback=[];
+function aoClose(id){document.getElementById(id).classList.add('hidden')}
 
-            const filtered = products.filter(p => p.name.toLowerCase().includes(query) || p.category.toLowerCase().includes(query));
+/* Slides */
+function aoGo(i){const sl=document.getElementById('ao-slides');if(!sl)return;aoIdx=i;aoDots(i);sl.scrollTo({left:sl.clientWidth*i,behavior:'smooth'})}
+function aoDots(i){document.querySelectorAll('#ao-dots button').forEach((d,k)=>d.className='h-1.5 rounded-full transition-all cursor-pointer '+(k===i?'w-5 bg-emerald-600':'w-1.5 bg-slate-300'))}
+function aoAuto(){clearInterval(aoTimer);aoTimer=setInterval(()=>aoGo((aoIdx+1)%3),4000)}
+function aoFill(){
+  const c=(cfg.coupons||[])[0],a=document.getElementById('ao-s2'),b=document.getElementById('ao-s3');if(!a||!b)return;
+  const slide=(tag,title,text,emoji)=>`<div><span class="inline-block bg-white/20 text-[10px] sm:text-xs font-extrabold px-3 py-1 rounded-full uppercase mb-2.5">${tag}</span><h2 class="text-xl sm:text-3xl font-extrabold mb-1.5">${esc(title)}</h2><p class="text-xs sm:text-sm text-white/85">${esc(text)}</p></div><div class="text-6xl sm:text-7xl shrink-0">${emoji}</div>`;
+  a.innerHTML=slide('🚚 Free Delivery','Free delivery above ₹'+cfg.minFree,'Add a little more and save on delivery charges.','📦');
+  b.innerHTML=c?slide('🎟️ Today\'s Offer','Use '+c.code+' & save more',cDesc(c),'🏷️'):slide('💳 Pay on Delivery','UPI or Cash on Delivery','No advance payment. Pay when your order arrives.','💸');
+}
+function aoSlides(){
+  const main=document.querySelector('main'),hero=main&&main.firstElementChild;
+  if(!hero||document.getElementById('ao-slides'))return;
+  const wrap=document.createElement('div');wrap.className='mb-6';
+  wrap.innerHTML='<div id="ao-slides" class="flex overflow-x-auto snap-x snap-mandatory scroll-smooth rounded-3xl no-scrollbar"></div><div id="ao-dots" class="flex justify-center gap-1.5 mt-2.5"><button onclick="aoGo(0);aoAuto()"></button><button onclick="aoGo(1);aoAuto()"></button><button onclick="aoGo(2);aoAuto()"></button></div><div id="ao-again"></div>';
+  main.insertBefore(wrap,hero);
+  const sl=document.getElementById('ao-slides');
+  hero.classList.remove('mb-6');hero.classList.add('snap-center','shrink-0','w-full');
+  sl.appendChild(hero);
+  const mk=(id,g)=>{const d=document.createElement('div');d.id=id;d.className='snap-center shrink-0 w-full bg-gradient-to-r '+g+' text-white p-5 sm:p-7 flex items-center justify-between gap-3';sl.appendChild(d)};
+  mk('ao-s2','from-indigo-700 via-blue-600 to-sky-500');mk('ao-s3','from-amber-600 via-orange-500 to-rose-500');
+  sl.onscroll=()=>{const i=Math.round(sl.scrollLeft/sl.clientWidth);if(i!==aoIdx&&i>=0&&i<3){aoIdx=i;aoDots(i)}};
+  sl.ontouchstart=()=>clearInterval(aoTimer);sl.ontouchend=aoAuto;
+  window.addEventListener('resize',()=>sl.scrollTo({left:sl.clientWidth*aoIdx,behavior:'auto'}));
+  aoFill();aoDots(0);aoAuto();
+}
 
-            filtered.forEach(p => {
-                const isOut = p.stock === "Out of Stock";
-                grid.innerHTML += `
-                    <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex flex-col justify-between">
-                        <div>
-                            <div class="flex justify-between items-start mb-2">
-                                <span class="text-[10px] bg-emerald-50 text-emerald-700 font-semibold px-2 py-0.5 rounded-full">${p.category}</span>
-                                <span class="text-[10px] ${isOut ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'} font-semibold px-2 py-0.5 rounded-full">${p.stock}</span>
-                            </div>
-                            <h4 class="font-bold text-gray-900 text-sm mb-1 line-clamp-2">${p.name}</h4>
-                            <div class="flex items-baseline gap-2 mb-3">
-                                <span class="text-base font-extrabold text-emerald-700">₹${p.price}</span>
-                            </div>
-                        </div>
-                        <button onclick="addToCart('${p.id}')" ${isOut ? 'disabled' : ''} class="w-full ${isOut ? 'bg-gray-200 text-gray-400' : 'bg-emerald-600 hover:bg-emerald-700 text-white'} text-xs font-bold py-2 rounded-xl transition">
-                            Add to Cart
-                        </button>
-                    </div>
-                `;
-            });
-        }
+/* Reorder */
+function aoAgain(){
+  const el=document.getElementById('ao-again');if(!el)return;
+  const o=orders[0];
+  if(!o||!o.items||!o.items.length){el.innerHTML='';return}
+  el.innerHTML=`<div class="bg-white border border-slate-200 rounded-2xl p-3 mt-3 flex items-center gap-3"><div class="flex-1 min-w-0"><p class="text-sm font-extrabold">🔁 Order again</p><p class="text-xs text-slate-500 truncate">${esc(o.items.map(i=>i.name).join(', '))}</p></div><button onclick="aoOpenOrders()" class="text-xs font-bold text-emerald-700 cursor-pointer shrink-0">My orders</button><button onclick="aoReorder(${o.id})" class="btn bg-emerald-600 text-white !py-2 text-xs shrink-0">Reorder</button></div>`;
+}
+function aoReorder(id){
+  const o=orders.find(x=>x.id==id);if(!o)return;let added=0,miss=0;
+  o.items.forEach(i=>{const p=products.find(x=>x.name===i.name&&x.weight===i.weight);
+    if(p&&p.inStock!==false){cart[p.id]=i.quantity;added++}else miss++});
+  aoClose('ao-orders');filterProducts();updateCart();
+  if(!added)return toast('Sorry, those items are unavailable right now');
+  toast(miss?`${added} items added • ${miss} unavailable`:`✅ ${added} items added to cart`);
+  if(document.getElementById('cart-drawer').classList.contains('hidden'))toggleCart();
+}
+function aoOpenOrders(){
+  document.getElementById('ao-orders-list').innerHTML=orders.length?orders.slice(0,10).map(o=>{
+    const f=aoFeedback.find(x=>x.orderId==o.id);
+    return `<div class="border border-slate-200 rounded-2xl p-3 space-y-2"><div class="flex justify-between text-xs"><span class="font-bold">${esc(o.date)}</span><span class="font-extrabold text-emerald-700">₹${o.total}</span></div><p class="text-xs text-slate-600">${esc(o.items.map(i=>i.name+' ×'+i.quantity).join(', '))}</p><div class="flex gap-2"><button onclick="aoReorder(${o.id})" class="btn flex-1 bg-emerald-600 text-white !py-2 text-xs">🔁 Reorder</button><button onclick="aoOpenFb(${o.id})" class="btn flex-1 bg-amber-50 text-amber-800 border border-amber-200 !py-2 text-xs">${f?'★ '+f.stars+' Rated':'⭐ Rate order'}</button></div></div>`}).join('')
+    :'<p class="text-center text-sm text-slate-400 py-8">No orders yet.</p>';
+  document.getElementById('ao-orders').classList.remove('hidden');
+}
 
-        // 5. Admin Stock Table (Ordered correctly: Name -> Price -> Save -> Margin -> Stock -> Actions)
-        function renderAdminStock() {
-            const tbody = document.getElementById("adminStockTableBody");
-            tbody.innerHTML = "";
+/* Feedback */
+function aoDrawStars(){document.getElementById('ao-stars').innerHTML=[1,2,3,4,5].map(n=>`<button onclick="aoStars=${n};aoDrawStars()" class="cursor-pointer ${n<=aoStars?'text-amber-400':'text-slate-300'}">★</button>`).join('')}
+function aoOpenFb(oid){
+  aoFbOrder=oid||null;aoStars=0;document.getElementById('ao-fb-text').value='';
+  const f=oid&&aoFeedback.find(x=>x.orderId==oid);if(f){aoStars=f.stars;document.getElementById('ao-fb-text').value=f.comment||''}
+  aoClose('ao-orders');aoDrawStars();document.getElementById('ao-fb').classList.remove('hidden');
+}
+function aoSubmitFb(){
+  if(!aoStars)return toast('Please select a star rating');
+  const o=aoFbOrder&&orders.find(x=>x.id==aoFbOrder),text=document.getElementById('ao-fb-text').value.trim();
+  const f={id:Date.now(),date:new Date().toLocaleString(),orderId:aoFbOrder,stars:aoStars,comment:text,name:o?o.customer:'Customer'};
+  aoFeedback=aoFeedback.filter(x=>!(aoFbOrder&&x.orderId==aoFbOrder));aoFeedback.unshift(f);store('kirana_feedback',aoFeedback);
+  aoClose('ao-fb');
+  const m=`⭐ *Customer Feedback - ${cfg.name}*\n\n👤 ${f.name}\n${'★'.repeat(f.stars)}${'☆'.repeat(5-f.stars)} (${f.stars}/5)\n`+(text?`💬 ${text}\n`:'')+(o?`🧾 Order of ${o.date} (₹${o.total})`:'');
+  window.open(`https://wa.me/${String(cfg.whatsapp).replace(/\D/g,'')}?text=${encodeURIComponent(m)}`,'_blank');
+  toast('🙏 Thank you for your feedback!');aoRenderFb();
+}
+function aoDelFb(id){
+  if(confirm('Delete this feedback?')){
+    aoFeedback=aoFeedback.filter(f=>f.id!=id);
+    store('kirana_feedback',aoFeedback);
+    aoRenderFb();
+    toast('🗑️ Feedback deleted');
+  }
+}
+function aoClearFb(){
+  if(!aoFeedback.length)return toast('No feedback to clear');
+  if(confirm('Clear all customer feedback records?')){
+    aoFeedback=[];
+    store('kirana_feedback',aoFeedback);
+    aoRenderFb();
+    toast('🗑️ All feedback cleared');
+  }
+}
+function aoRenderFb(){
+  const l=document.getElementById('ao-flist');if(!l)return;
+  const avg=aoFeedback.length?(aoFeedback.reduce((a,f)=>a+f.stars,0)/aoFeedback.length).toFixed(1):'';
+  document.getElementById('ao-favg').textContent=avg?`★ ${avg} (${aoFeedback.length})`:'';
+  l.innerHTML=aoFeedback.length?aoFeedback.map(f=>`<div class="bg-slate-50 border border-slate-200/80 rounded-xl p-3 text-xs space-y-1"><div class="flex justify-between items-center gap-2"><b>${esc(f.name)}</b><div class="flex items-center gap-2"><span class="text-amber-500 font-extrabold">${'★'.repeat(f.stars)}${'☆'.repeat(5-f.stars)}</span><button onclick="aoDelFb(${f.id})" class="btn bg-rose-50 text-rose-600 !px-2 !py-1 text-[11px]"><i class="fa-solid fa-trash"></i></button></div></div>${f.comment?`<p class="text-slate-700">💬 ${esc(f.comment)}</p>`:''}<p class="text-[10px] text-slate-400">${esc(f.date)}</p></div>`).join(''):'<p class="text-xs text-slate-400 text-center py-4">No feedback yet.</p>';
+}
 
-            products.forEach(p => {
-                tbody.innerHTML += `
-                    <tr class="hover:bg-gray-50 border-b border-gray-100">
-                        <td class="p-4 font-semibold text-gray-900">${p.name}</td>
-                        <td class="p-4 font-bold text-emerald-700">₹${p.price}</td>
-                        <td class="p-4 text-gray-600">₹${p.save}</td>
-                        <td class="p-4 text-gray-600">${p.margin}%</td>
-                        <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs font-semibold ${p.stock === 'In Stock' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">${p.stock}</span></td>
-                        <td class="p-4 text-right space-x-2">
-                            <button onclick="openEditProductModal('${p.id}')" class="text-blue-600 hover:text-blue-800 p-1"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="deleteProduct('${p.id}')" class="text-red-600 hover:text-red-800 p-1"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
+try{
+  const _po=placeOrder;placeOrder=function(){const r=_po.apply(this,arguments);try{aoAgain()}catch(e){}return r};
+  const _ra=refreshAll;refreshAll=function(){const r=_ra.apply(this,arguments);try{aoFill()}catch(e){}return r};
+  const _rd=renderAdmin;renderAdmin=function(){const r=_rd.apply(this,arguments);try{aoRenderFb()}catch(e){}return r};
+}catch(e){console.error(e)}
 
-        function openAddProductModal() {
-            document.getElementById("productModalTitle").innerText = "Add New Product";
-            document.getElementById("editProductId").value = "";
-            document.getElementById("modalProdName").value = "";
-            document.getElementById("modalProdPrice").value = "";
-            document.getElementById("modalProdSave").value = "";
-            document.getElementById("modalProdMargin").value = "";
-            document.getElementById("productModal").classList.remove("hide");
-        }
-
-        function openEditProductModal(id) {
-            const p = products.find(x => x.id === id);
-            if (!p) return;
-            document.getElementById("productModalTitle").innerText = "Edit Product";
-            document.getElementById("editProductId").value = p.id;
-            document.getElementById("modalProdName").value = p.name;
-            document.getElementById("modalProdPrice").value = p.price;
-            document.getElementById("modalProdSave").value = p.save;
-            document.getElementById("modalProdMargin").value = p.margin;
-            document.getElementById("modalProdCategory").value = p.category;
-            document.getElementById("modalProdStock").value = p.stock;
-            document.getElementById("productModal").classList.remove("hide");
-        }
-
-        function closeProductModal() {
-            document.getElementById("productModal").classList.add("hide");
-        }
-
-        function saveProductData() {
-            const id = document.getElementById("editProductId").value;
-            const name = document.getElementById("modalProdName").value;
-            const price = parseFloat(document.getElementById("modalProdPrice").value) || 0;
-            const save = parseFloat(document.getElementById("modalProdSave").value) || 0;
-            const margin = parseFloat(document.getElementById("modalProdMargin").value) || 0;
-            const category = document.getElementById("modalProdCategory").value;
-            const stock = document.getElementById("modalProdStock").value;
-
-            if (!name || price <= 0) {
-                alert("Please enter a valid product name and price.");
-                return;
-            }
-
-            if (id) {
-                const idx = products.findIndex(x => x.id === id);
-                if (idx !== -1) {
-                    products[idx] = { id, name, price, save, margin, category, stock };
-                }
-            } else {
-                const newId = Date.now().toString();
-                products.push({ id: newId, name, price, save, margin, category, stock });
-            }
-
-            syncToFirebase();
-            renderStorefront();
-            renderAdminStock();
-            closeProductModal();
-        }
-
-        function deleteProduct(id) {
-            if (confirm("Are you sure you want to delete this product?")) {
-                products = products.filter(x => x.id !== id);
-                syncToFirebase();
-                renderStorefront();
-                renderAdminStock();
-            }
-        }
-
-        // 6. Settings & Coupons Management
-        function saveStoreSettings() {
-            storeConfig.name = document.getElementById("settingStoreName").value;
-            storeConfig.phone = document.getElementById("settingPhone").value;
-            storeConfig.deliveryTime = document.getElementById("settingDeliveryTime").value;
-            
-            syncToFirebase();
-            applyStoreConfig();
-            alert("Store settings saved and synced live!");
-        }
-
-        function saveCouponSettings() {
-            storeConfig.couponCode = document.getElementById("settingCouponCode").value.toUpperCase();
-            storeConfig.couponDesc = document.getElementById("settingCouponDesc").value;
-            storeConfig.couponDiscount = parseFloat(document.getElementById("settingCouponDiscount").value) || 0;
-
-            syncToFirebase();
-            applyStoreConfig();
-            alert("Coupon updated and synced live to storefront!");
-        }
-
-        function copyCouponCode(code) {
-            navigator.clipboard.writeText(code);
-            alert(`Coupon code "${code}" copied to clipboard!`);
-        }
-
-        // 7. Cart & WhatsApp Checkout
-        function addToCart(id) {
-            const p = products.find(x => x.id === id);
-            if (!p) return;
-            const existing = cart.find(x => x.id === id);
-            if (existing) {
-                existing.qty += 1;
-            } else {
-                cart.push({ ...p, qty: 1 });
-            }
-            updateCartBadge();
-        }
-
-        function updateCartBadge() {
-            const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
-            document.getElementById("cartCountBadge").innerText = totalCount;
-        }
-
-        function openCartModal() {
-            const list = document.getElementById("cartItemsList");
-            list.innerHTML = "";
-
-            if (cart.length === 0) {
-                list.innerHTML = `<p class="text-sm text-gray-500 text-center py-8">Your cart is empty.</p>`;
-                document.getElementById("cartSubtotal").innerText = "₹0";
-                document.getElementById("cartDiscount").innerText = "-₹0";
-                document.getElementById("cartTotal").innerText = "₹0";
-                document.getElementById("cartModal").classList.remove("hide");
-                return;
-            }
-
-            let subtotal = 0;
-            cart.forEach(item => {
-                subtotal += item.price * item.qty;
-                list.innerHTML += `
-                    <div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl border">
-                        <div>
-                            <h4 class="font-bold text-sm">${item.name}</h4>
-                            <p class="text-xs text-gray-500">₹${item.price} × ${item.qty}</p>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="font-bold text-emerald-700">₹${item.price * item.qty}</span>
-                            <button onclick="removeFromCart('${item.id}')" class="text-red-500 hover:text-red-700 px-2"><i class="fa-solid fa-trash text-xs"></i></button>
-                        </div>
-                    </div>
-                `;
-            });
-
-            const discount = Math.round(subtotal * (storeConfig.couponDiscount / 100));
-            const total = subtotal - discount;
-
-            document.getElementById("cartSubtotal").innerText = `₹${subtotal}`;
-            document.getElementById("cartDiscount").innerText = `-₹${discount}`;
-            document.getElementById("cartTotal").innerText = `₹${total}`;
-            document.getElementById("cartModal").classList.remove("hide");
-        }
-
-        function removeFromCart(id) {
-            cart = cart.filter(x => x.id !== id);
-            updateCartBadge();
-            openCartModal();
-        }
-
-        function closeCartModal() {
-            document.getElementById("cartModal").classList.add("hide");
-        }
-
-        function checkoutWhatsApp() {
-            if (cart.length === 0) {
-                alert("Your cart is empty!");
-                return;
-            }
-            const name = document.getElementById("checkoutCustomerName").value.trim();
-            const phone = document.getElementById("checkoutCustomerPhone").value.trim();
-            const address = document.getElementById("checkoutCustomerAddress").value.trim();
-
-            if (!name || !phone || !address) {
-                alert("Please fill in your Name, Phone Number, and Delivery Address.");
-                return;
-            }
-
-            let subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-            let discount = Math.round(subtotal * (storeConfig.couponDiscount / 100));
-            let total = subtotal - discount;
-
-            let msg = `🛒 *New Order - ${storeConfig.name}*%0A%0A`;
-            msg += `👤 *Customer:* ${name}%0A`;
-            msg += `📞 *Phone:* ${phone}%0A`;
-            msg += `📍 *Address:* ${address}%0A%0A`;
-            msg += `*Order Items:*%0A`;
-            cart.forEach(item => {
-                msg += `• ${item.name} (x${item.qty}) - ₹${item.price * item.qty}%0A`;
-            });
-            msg += `%0A*Subtotal:* ₹${subtotal}`;
-            if(discount > 0) msg += `%0A*Discount (${storeConfig.couponCode}):* -₹${discount}`;
-            msg += `%0A*Total Amount:* ₹${total}%0A%0A_Please confirm my 1-hour delivery order!_`;
-
-            const waUrl = `https://wa.me/${storeConfig.phone}?text=${msg}`;
-            window.open(waUrl, '_blank');
-        }
-    </script>
+function aoInit(){
+  try{
+    aoSlides();aoAgain();
+    const main=document.querySelector('main');
+    main.insertAdjacentHTML('beforeend','<div class="mt-8 text-center"><button onclick="aoOpenFb(null)" class="btn bg-amber-50 text-amber-800 border border-amber-200">⭐ Rate your experience</button></div>');
+    document.getElementById('at-ord').insertAdjacentHTML('beforeend','<div class="card mt-4"><div class="flex justify-between items-center mb-3"><h3 class="font-extrabold text-sm sm:text-base">⭐ Customer Feedback <span id="ao-favg" class="text-amber-500 text-sm ml-1"></span></h3><button onclick="aoClearFb()" class="btn bg-rose-50 text-rose-600 !py-1.5 text-xs">Clear All</button></div><div id="ao-flist" class="space-y-2"></div></div>');
+    aoRenderFb();
+  }catch(e){console.error('add-on',e)}
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',aoInit);else aoInit();
+</script>
 </body>
 </html>
