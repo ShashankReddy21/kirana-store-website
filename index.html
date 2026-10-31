@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-<!-- Tailwind utilities used in the page -->
+<!-- Tailwind utilities used throughout the page -->
 <style type="text/tailwindcss">
   .inp{ @apply w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm bg-white focus:outline-none focus:border-emerald-500; }
   .btn{ @apply px-4 py-2.5 rounded-xl text-sm font-bold cursor-pointer transition active:scale-95; }
@@ -23,22 +23,21 @@
   body{font-family:'Plus Jakarta Sans',sans-serif}
   .no-scrollbar::-webkit-scrollbar{display:none}
   .no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
-  /* Owner button hidden by default – shown only when ?owner=true */
+  /* Owner button hidden for normal visitors */
   #top-owner-btn.hidden{display:none !important}
 </style>
 </head>
 
 <body class="bg-slate-50 text-slate-800 pb-32 overflow-x-hidden w-full">
 
-<!-- --------------------------------------------------- Announcement --------------------------------------------------- -->
+<!-- ============================= Announcement ============================= -->
 <div class="bg-emerald-700 text-white text-xs py-2 px-3 sm:px-6 font-medium">
   <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
     <div class="flex items-center gap-2 min-w-0 flex-1">
       <span class="bg-amber-400 text-slate-950 text-[10px] px-2 py-0.5 rounded-full font-extrabold shrink-0">⚡ 1 HR</span>
       <span id="ann" class="truncate text-[11px] sm:text-xs font-semibold"></span>
     </div>
-
-    <!-- Owner button – hidden for normal customers -->
+    <!-- Owner button – hidden by default, shown only on ?owner=true -->
     <button id="top-owner-btn"
             onclick="openLogin()"
             class="hidden shrink-0 text-[11px] bg-emerald-950/70 hover:bg-emerald-950 px-2.5 py-1 rounded-lg font-bold flex items-center gap-1.5 border border-emerald-500/30 cursor-pointer">
@@ -47,7 +46,7 @@
   </div>
 </div>
 
-<!-- ------------------------------------------------------ Header ------------------------------------------------------- -->
+<!-- =============================== Header =============================== -->
 <header class="bg-white/95 backdrop-blur-md sticky top-0 z-30 border-b border-slate-100">
   <div class="max-w-7xl mx-auto px-3 sm:px-6 py-3 flex items-center justify-between gap-3">
     <div class="flex items-center gap-2.5 min-w-0">
@@ -60,11 +59,9 @@
         </p>
       </div>
     </div>
-
     <button onclick="toggleCart()"
             class="shrink-0 bg-emerald-50 text-emerald-800 border border-emerald-200 px-3.5 py-2 rounded-2xl font-bold flex items-center gap-2 cursor-pointer active:scale-95">
-      <i class="fa-solid fa-bag-shopping text-emerald-600"></i>
-      <span class="text-sm hidden sm:inline">My Cart</span>
+      <i class="fa-solid fa-bag-shopping text-emerald-600"></i><span class="text-sm hidden sm:inline">My Cart</span>
       <span id="hdr-count"
             class="bg-emerald-600 text-white text-[11px] px-2 py-0.5 rounded-full font-extrabold">0</span>
     </button>
@@ -85,9 +82,8 @@
   </div>
 </header>
 
-<!-- ------------------------------------------------------- Main -------------------------------------------------------- -->
+<!-- ================================ Main ================================ -->
 <main class="max-w-7xl mx-auto px-3 sm:px-6 py-5">
-
   <!-- Hero banner -->
   <div class="bg-gradient-to-r from-emerald-800 via-emerald-700 to-teal-700 rounded-3xl p-5 sm:p-7 text-white mb-6 shadow-lg flex flex-col sm:flex-row justify-between sm:items-center gap-4">
     <div class="max-w-xl">
@@ -95,9 +91,7 @@
         <i class="fa-solid fa-bolt"></i> Guaranteed 1‑Hour Home Delivery
       </div>
       <h2 class="text-xl sm:text-3xl font-extrabold mb-1.5">Your Neighborhood Kirana, Now Online</h2>
-      <p class="text-emerald-100 text-xs sm:text-sm">
-        Fresh stock, fair prices, zero app commissions. Add items, apply a coupon and order on WhatsApp!
-      </p>
+      <p class="text-emerald-100 text-xs sm:text-sm">Fresh stock, fair prices, zero app commissions. Add items, apply a coupon and order on WhatsApp!</p>
     </div>
     <div class="bg-white/15 border border-white/20 px-4 py-3 rounded-2xl shrink-0">
       <p class="text-[11px] text-emerald-100 font-semibold uppercase">Express Dispatch</p>
@@ -105,10 +99,10 @@
     </div>
   </div>
 
-  <!-- Live offers / coupons bar -->
+  <!-- Live offers & coupons bar -->
   <div id="live-coupons-bar" class="mb-5"></div>
 
-  <!-- Inventory title -->
+  <!-- Inventory heading -->
   <div class="flex justify-between items-center mb-4">
     <h3 class="text-base sm:text-lg font-extrabold text-slate-900">Fresh Store Inventory</h3>
     <span id="pcount"
@@ -120,19 +114,14 @@
        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-5"></div>
 </main>
 
-<!-- ---------------------------------------------------- Floating cart --------------------------------------------------- -->
+<!-- =========================== Floating cart bar =========================== -->
 <div id="fbar"
      class="fixed bottom-4 inset-x-0 z-30 px-4 pointer-events-none hidden">
   <div class="max-w-md mx-auto pointer-events-auto bg-emerald-700 text-white rounded-2xl p-3 shadow-2xl flex items-center justify-between gap-3">
     <div class="flex items-center gap-3 min-w-0">
-      <div class="bg-emerald-900/70 w-10 h-10 rounded-xl flex items-center justify-center shrink-0">
-        <i class="fa-solid fa-basket-shopping text-amber-300"></i>
-      </div>
+      <div class="bg-emerald-900/70 w-10 h-10 rounded-xl flex items-center justify-center shrink-0"><i class="fa-solid fa-basket-shopping text-amber-300"></i></div>
       <div class="min-w-0">
-        <div class="flex items-center gap-2">
-          <span id="fbar-items" class="font-extrabold text-sm"></span><span class="text-emerald-300">•</span>
-          <span id="fbar-total" class="font-black text-base text-amber-300"></span>
-        </div>
+        <div class="flex items-center gap-2"><span id="fbar-items" class="font-extrabold text-sm"></span><span class="text-emerald-300">•</span><span id="fbar-total" class="font-black text-base text-amber-300"></span></div>
         <p id="fbar-save" class="text-[11px] text-emerald-100 truncate"></p>
       </div>
     </div>
@@ -143,8 +132,9 @@
   </div>
 </div>
 
-<!-- ------------------------------------------------------ Cart drawer ---------------------------------------------------- -->
-<div id="cart-drawer" class="fixed inset-0 z-50 hidden">
+<!-- =============================== Cart drawer =============================== -->
+<div id="cart-drawer"
+     class="fixed inset-0 z-50 hidden">
   <div class="absolute inset-0 bg-slate-900/60" onclick="toggleCart()"></div>
   <div class="absolute inset-y-0 right-0 w-full sm:max-w-md bg-slate-50 shadow-2xl flex flex-col">
     <!-- Header -->
@@ -166,22 +156,28 @@
       </div>
     </div>
 
-    <!-- Cart body -->
+    <!-- Body -->
     <div class="flex-1 overflow-y-auto p-3 space-y-3">
       <div id="coupon-row"></div>
       <div id="cart-items" class="space-y-2"></div>
       <div id="bill"></div>
 
-      <!-- Checkout (hidden until there is at least one item) -->
+      <!-- Checkout (hidden until cart non‑empty) -->
       <div id="checkout" class="space-y-3 hidden">
         <div class="card space-y-2.5">
           <h4 class="font-extrabold text-sm">Delivery Details</h4>
           <input id="cust-name" placeholder="Your Name *" class="inp">
-          <input id="cust-phone" type="tel" inputmode="numeric" maxlength="10" placeholder="10‑Digit Mobile Number *" class="inp">
+          <input id="cust-phone"
+                 type="tel"
+                 inputmode="numeric"
+                 maxlength="10"
+                 placeholder="10‑Digit Mobile Number *"
+                 class="inp">
           <div>
             <div class="flex items-center justify-between mb-1">
               <span class="lbl !mb-0">Delivery Location</span>
-              <button onclick="detectLocation()" class="text-xs font-bold text-emerald-700 cursor-pointer">
+              <button onclick="detectLocation()"
+                      class="text-xs font-bold text-emerald-700 cursor-pointer">
                 <i class="fa-solid fa-location-crosshairs"></i> Detect again
               </button>
             </div>
@@ -225,7 +221,7 @@
   </div>
 </div>
 
-<!-- ---------------------------------------------------- Owner login modal ---------------------------------------------------- -->
+<!-- ============================= Owner login modal ============================= -->
 <div id="login-modal"
      class="fixed inset-0 z-[55] bg-slate-900/70 flex items-center justify-center hidden p-4">
   <div class="bg-white p-6 rounded-3xl w-full max-w-sm shadow-2xl">
@@ -244,7 +240,7 @@
       </div>
     </div>
 
-    <!-- Setup view (first time) -->
+    <!-- Setup view (first use) -->
     <div id="v-setup" class="hidden">
       <div class="text-center mb-4">
         <div class="w-12 h-12 bg-amber-100 text-amber-700 rounded-2xl mx-auto flex items-center justify-center text-xl mb-3"><i class="fa-solid fa-shield-halved"></i></div>
@@ -280,29 +276,164 @@
   </div>
 </div>
 
-<!-- ----------------------------------------------------------- Scripts ---------------------------------------------------------- -->
+<!-- =============================== Admin panel =============================== -->
+<div id="admin"
+     class="fixed inset-0 z-50 bg-slate-100 overflow-y-auto overflow-x-hidden hidden">
+  <div class="max-w-5xl mx-auto px-3 sm:px-6 py-5">
+    <!-- Admin header -->
+    <div class="flex justify-between items-center bg-white p-4 rounded-2xl mb-4 gap-3 border border-slate-200/60">
+      <div>
+        <h2 class="text-lg font-extrabold">Store Admin Panel</h2>
+        <p class="text-[11px] text-slate-500">Items, orders, delivery, categories &amp; coupons</p>
+      </div>
+      <button onclick="closeDash()"
+              class="btn bg-rose-50 text-rose-600 !py-2 text-xs"><i class="fa-solid fa-right-from-bracket mr-1"></i> Exit</button>
+    </div>
+
+    <!-- Tab buttons -->
+    <div class="grid grid-cols-3 gap-2 mb-4">
+      <button id="tb-inv" onclick="tab('inv')" class="btn text-xs bg-emerald-600 text-white">📦 Items (<span id="a-count">0</span>)</button>
+      <button id="tb-ord" onclick="tab('ord')" class="btn text-xs bg-white text-slate-600 border border-slate-200">🧾 Orders (<span id="o-count">0</span>)</button>
+      <button id="tb-set" onclick="tab('set')" class="btn text-xs bg-white text-slate-600 border border-slate-200">⚙️ Settings</button>
+    </div>
+
+    <!-- =========================== Inventory tab =========================== -->
+    <div id="at-inv" class="space-y-4">
+      <!-- Add new product card -->
+      <div class="card">
+        <h3 class="font-extrabold mb-3"><i class="fa-solid fa-circle-plus text-emerald-600"></i> Add New Item</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-3">
+          <input id="n-name" placeholder="Item Name *" class="inp">
+          <input id="n-weight" placeholder="Pack Size (e.g. 5 kg) *" class="inp">
+          <div class="grid grid-cols-2 gap-2"><input id="n-price" type="number" placeholder="Selling ₹ *" class="inp"><input id="n-mrp" type="number" placeholder="MRP ₹ (opt)" class="inp"></div>
+          <select id="n-cat" class="inp"></select>
+          <select id="n-stock" class="inp"><option value="1">✅ In Stock</option><option value="0">❌ Out of Stock</option></select>
+        </div>
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/80 mb-3 grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
+          <label class="flex items-center justify-center gap-2 bg-emerald-50 text-emerald-800 border border-dashed border-emerald-300 rounded-xl py-2.5 text-xs font-bold cursor-pointer">
+            <i class="fa-solid fa-camera"></i><span id="up-label">Upload / Take Photo</span>
+            <input type="file" accept="image/*" class="hidden" onchange="handlePhoto(event)">
+          </label>
+          <input id="n-url" placeholder="OR paste image link" class="inp">
+          <div id="prev-wrap" class="hidden items-center gap-3"><img id="prev-img" class="w-12 h-12 rounded-xl object-cover border border-emerald-300"><span class="text-xs text-emerald-700 font-bold">✅ Photo ready</span></div>
+        </div>
+        <button onclick="addProduct()" class="btn bg-emerald-600 text-white">+ Add Item to Store</button>
+      </div>
+
+      <!-- Inventory list -->
+      <div id="a-list" class="space-y-3"></div>
+    </div>
+
+    <!-- =========================== Orders tab =========================== -->
+    <div id="at-ord" class="hidden">
+      <div class="card">
+        <div class="flex justify-between items-center mb-4"><h3 class="font-extrabold">Recent WhatsApp Orders</h3><button onclick="clearOrders()" class="btn bg-rose-50 text-rose-600 !py-1.5 text-xs">Clear All</button></div>
+        <div id="o-list" class="space-y-3"></div>
+      </div>
+    </div>
+
+    <!-- =========================== Settings tab =========================== -->
+    <div id="at-set" class="hidden space-y-4">
+      <!-- Store details -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="card space-y-3">
+          <h3 class="font-extrabold"><i class="fa-solid fa-store text-emerald-600"></i> Store Details</h3>
+          <div>
+            <label class="lbl">Shop Status (Open / Close Store)</label>
+            <div class="grid grid-cols-2 gap-2">
+              <button type="button" id="st-open" onclick="setShopStatus(true)" class="btn text-xs !py-2">🟢 Shop Open</button>
+              <button type="button" id="st-close" onclick="setShopStatus(false)" class="btn text-xs !py-2">🔴 Shop Closed</button>
+            </div>
+          </div>
+          <div><label class="lbl">Store Name</label><input id="s-name" class="inp"></div>
+          <div><label class="lbl">Owner WhatsApp (with 91, e.g. 919876543210)</label><input id="s-wa" type="tel" class="inp"></div>
+          <button onclick="saveSettings()" class="btn w-full bg-emerald-600 text-white">Save Store Details</button>
+        </div>
+
+        <!-- Delivery charges -->
+        <div class="card space-y-3">
+          <h3 class="font-extrabold"><i class="fa-solid fa-motorcycle text-emerald-600"></i> Delivery Charges</h3>
+          <div><label class="lbl">Delivery Charge (₹) — 0 for always free</label><input id="s-fee" type="number" min="0" class="inp"></div>
+          <div><label class="lbl">Free Delivery Above (₹)</label><input id="s-min" type="number" min="0" class="inp"></div>
+          <button onclick="saveSettings()" class="btn w-full bg-emerald-600 text-white">Save Store &amp; Delivery Settings</button>
+        </div>
+      </div>
+
+      <!-- Categories & Coupons -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Categories -->
+        <div class="card">
+          <h3 class="font-extrabold mb-3"><i class="fa-solid fa-layer-group text-emerald-600"></i> Categories</h3>
+          <div id="s-cats" class="flex flex-wrap gap-2 mb-3"></div>
+          <div class="flex gap-2"><input id="new-cat" placeholder="New category (e.g. Fruits & Veg)" class="inp"><button onclick="addCat()" class="btn bg-emerald-600 text-white">Add</button></div>
+        </div>
+
+        <!-- Coupons -->
+        <div class="card">
+          <h3 class="font-extrabold mb-3"><i class="fa-solid fa-tags text-emerald-600"></i> Discount Coupons</h3>
+          <div id="s-coupons" class="space-y-2 mb-3"></div>
+          <div class="grid grid-cols-2 gap-2">
+            <input id="nc-code" placeholder="CODE" class="inp uppercase">
+            <select id="nc-type" class="inp"><option value="pct">% off</option><option value="flat">Flat ₹ off</option></select>
+            <input id="nc-val" type="number" placeholder="Value" class="inp">
+            <input id="nc-min" type="number" placeholder="Min order ₹" class="inp">
+            <input id="nc-max" type="number" placeholder="Max discount ₹ (% only)" class="inp col-span-2">
+          </div>
+          <button onclick="addCoupon()" class="btn w-full bg-emerald-600 text-white mt-2">Add Coupon</button>
+        </div>
+      </div>
+
+      <!-- Security (PIN & Gmail) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="card space-y-3">
+          <h3 class="font-extrabold"><i class="fa-solid fa-lock text-emerald-600"></i> PIN & Gmail Recovery</h3>
+          <div><label class="lbl">New 4‑Digit PIN (leave empty to keep current)</label><div data-pin="s-pin" data-ph="New PIN"></div></div>
+          <div><label class="lbl">Recovery Gmail</label><input id="s-email" type="email" class="inp"></div>
+          <button onclick="saveSecurity()" class="btn w-full bg-emerald-600 text-white">Save PIN & Gmail</button>
+        </div>
+
+        <!-- Backup & Restore -->
+        <div class="card space-y-3">
+          <h3 class="font-extrabold"><i class="fa-solid fa-database text-blue-600"></i> Backup</h3>
+          <p class="text-xs text-slate-500">Save a backup of items, photos, prices &amp; settings, or restore one anytime.</p>
+          <button onclick="exportBackup()" class="btn w-full bg-blue-50 text-blue-700 border border-blue-200"><i class="fa-solid fa-download"></i> Download Backup</button>
+          <label class="btn w-full bg-slate-50 text-slate-700 border border-slate-200 block text-center"><i class="fa-solid fa-upload"></i> Restore Backup<input type="file" accept=".json" class="hidden" onchange="importBackup(event)"></label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================= Toast container ============================= -->
+<div id="toast"
+     class="fixed top-16 inset-x-4 z-[70] hidden pointer-events-none">
+  <div class="max-w-sm mx-auto bg-slate-900 text-white text-sm font-semibold rounded-xl px-4 py-3 shadow-xl text-center"
+       id="toast-t"></div>
+</div>
+
+<!-- ================================ Scripts ================================ -->
 <script>
-/* -------------------------------------------------------------------------
-   Utility shortcuts
--------------------------------------------------------------------------- */
+/* --------------------------------------------------------------
+   Helper shortcuts
+-------------------------------------------------------------- */
 const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-/* -------------------------------------------------------------------------
-   Simple localStorage helpers
--------------------------------------------------------------------------- */
-function load(k, d){
+/* --------------------------------------------------------------
+   LocalStorage utilities
+-------------------------------------------------------------- */
+function load(k,d){
   try{ const v=JSON.parse(localStorage.getItem(k)); return v===null?d:v; }
   catch(e){ return d; }
 }
-function store(k, v){
-  try{ localStorage.setItem(k, JSON.stringify(v)); return true; }
+function store(k,v){
+  try{ localStorage.setItem(k,JSON.stringify(v)); return true; }
   catch(e){ toast('Storage full – use smaller photos'); return false; }
 }
 
-/* -------------------------------------------------------------------------
-   Toast notification
--------------------------------------------------------------------------- */
+/* --------------------------------------------------------------
+   Toast notifications
+-------------------------------------------------------------- */
 function toast(m){
   const t=document.getElementById('toast-t');
   document.getElementById('toast').classList.remove('hidden');
@@ -311,9 +442,9 @@ function toast(m){
   toast.t=setTimeout(()=>document.getElementById('toast').classList.add('hidden'),2400);
 }
 
-/* -------------------------------------------------------------------------
+/* --------------------------------------------------------------
    Default data (fallback when nothing is stored)
--------------------------------------------------------------------------- */
+-------------------------------------------------------------- */
 const DEF_CATS=['Staples & Dal','Oils & Ghee','Snacks & Drinks','Dairy & Bread','Household'];
 const DEF_PRODUCTS=[
  {id:1,name:'Aashirvaad Shudh Chakki Atta',weight:'10 kg',price:420,originalPrice:465,category:'Staples & Dal',inStock:true,emoji:'🌾'},
@@ -334,9 +465,9 @@ const clone=o=>JSON.parse(JSON.stringify(o));
 
 let cfg,products,orders,cart={},applied='',curCat='All',adminFilter='all',photo='',loc=null;
 
-/* -------------------------------------------------------------------------
+/* --------------------------------------------------------------
    Bootstrap – load or initialise data
--------------------------------------------------------------------------- */
+-------------------------------------------------------------- */
 function boot(){
   const oc=load('kirana_config', {});
   if(oc.minFreeDelivery!=null && oc.minFree==null) oc.minFree=oc.minFreeDelivery;
@@ -369,9 +500,9 @@ function boot(){
 }
 const persist=()=>{ store('kirana_config', cfg); store('kirana_products', products); };
 
-/* -------------------------------------------------------------------------
+/* --------------------------------------------------------------
    UI rendering helpers
--------------------------------------------------------------------------- */
+-------------------------------------------------------------- */
 function applyCfg(){
   $('store-title').textContent=cfg.name;
   document.title=cfg.name+' - 1 Hour Grocery Delivery';
@@ -387,9 +518,7 @@ function applyCfg(){
   renderLiveCoupons();
 }
 
-/* -------------------------------------------------------------------------
-   Live coupons bar
--------------------------------------------------------------------------- */
+/* Live coupons bar */
 function renderLiveCoupons(){
   const el=$('live-coupons-bar'); if(!el) return;
   if(!cfg.coupons||!cfg.coupons.length){ el.innerHTML=''; return; }
@@ -405,9 +534,7 @@ function renderLiveCoupons(){
   </div>`;
 }
 
-/* -------------------------------------------------------------------------
-   Category list + product filtering
--------------------------------------------------------------------------- */
+/* Category list + product filtering */
 function renderCats(){
   const all=['All Items',...cfg.cats];
   $('cats').innerHTML=all.map((c,i)=> {
@@ -443,26 +570,25 @@ function renderProducts(items){
       <div>
         <div class="flex items-baseline gap-1.5 mb-2.5"><span class="text-emerald-700 font-black">₹${p.price}</span>${off?`<span class="text-slate-400 text-[11px] line-through">₹${p.originalPrice}</span>`:''}</div>
         ${!ok?`<button disabled class="w-full bg-slate-200 text-slate-500 text-xs font-extrabold py-2 rounded-xl">Out of Stock</button>`
-        :q?`<div class="flex items-center justify-between bg-emerald-600 text-white rounded-xl py-1 px-2">
-                <button onclick="changeQty(${p.id},-1)" class="w-7 h-7 rounded-lg bg-emerald-700 font-black cursor-pointer">-</button>
-                <span class="text-xs font-extrabold">${q}</span>
-                <button onclick="changeQty(${p.id},1)" class="w-7 h-7 rounded-lg bg-emerald-700 font-black cursor-pointer">+</button>
-              </div>`
+        :q?`<div class="flex items-center justify-between bg-emerald-600 text-white rounded-xl py-1 px-2"><button onclick="changeQty(${p.id},-1)" class="w-7 h-7 rounded-lg bg-emerald-700 font-black cursor-pointer">-</button><span class="text-xs font-extrabold">${q}</span><button onclick="changeQty(${p.id},1)" class="w-7 h-7 rounded-lg bg-emerald-700 font-black cursor-pointer">+</button></div>`
         :`<button onclick="changeQty(${p.id},1)" class="w-full bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white border border-emerald-200 text-xs font-extrabold py-2 rounded-xl transition cursor-pointer"><i class="fa-solid fa-plus text-[10px]"></i> ADD</button>`}
       </div>
     </div>`;
   }).join('');
 }
 
-/* -------------------------------------------------------------------------
+/* --------------------------------------------------------------
    Cart handling
--------------------------------------------------------------------------- */
+-------------------------------------------------------------- */
 function changeQty(id,d){
   const p=products.find(x=>x.id==id); if(!p||p.inStock===false) return;
   cart[id]=(cart[id]||0)+d;
   if(cart[id]<=0) delete cart[id];
   filterProducts(); updateCart();
 }
+function couponValue(c,sub){ return c.type==='pct' ? Math.min(Math.round(sub*c.value/100), c.max>0?c.max:Infinity) : Math.min(c.value, sub); }
+function cDesc(c){ return c.type==='pct' ? `Get ${c.value}% off${c.max>0?` up to ₹${c.max}`:''} on orders above ₹${c.min}` : `Flat ₹${c.value} off on orders above ₹${c.min}`; }
+
 function calc(){
   let sub=0,mrp=0,n=0;
   for(const id of Object.keys(cart)){
@@ -479,9 +605,6 @@ function calc(){
   const fee=(!sub || sub>=cfg.minFree) ? 0 : cfg.fee;
   return {n,sub,mrp,mrpSave:mrp-sub,disc,fee,total:sub-disc+fee,save:mrp-sub+disc};
 }
-function couponValue(c,sub){ return c.type==='pct' ? Math.min(Math.round(sub*c.value/100), c.max>0?c.max:Infinity) : Math.min(c.value, sub); }
-function cDesc(c){ return c.type==='pct' ? `Get ${c.value}% off${c.max>0?` up to ₹${c.max}`:''} on orders above ₹${c.min}` : `Flat ₹${c.value} off on orders above ₹${c.min}`; }
-
 function updateCart(){
   const t=calc();
   $('hdr-count').textContent=t.n;
@@ -503,7 +626,7 @@ function updateCart(){
     $('coupon-row').innerHTML=''; $('bill').innerHTML=''; return;
   }
 
-  /* Cart items list */
+  /* Cart items */
   $('cart-items').innerHTML=Object.keys(cart).map(id=>{
     const p=products.find(x=>x.id==id), q=cart[id];
     const thumb=p.image?`<img src="${esc(p.image)}" onerror="this.onerror=null;this.src=PH" class="w-11 h-11 object-cover rounded-lg bg-slate-100 shrink-0">`
@@ -546,9 +669,9 @@ function toggleCart(){
   if(!d.classList.contains('hidden')){ updateCart(); if(!loc && Object.keys(cart).length) detectLocation(); }
 }
 
-/* -------------------------------------------------------------------------
+/* --------------------------------------------------------------
    Coupons UI
--------------------------------------------------------------------------- */
+-------------------------------------------------------------- */
 function openCoupons(){
   const t=calc();
   $('coupon-list').innerHTML=cfg.coupons.length
@@ -570,9 +693,9 @@ function applyCoupon(code){
 }
 function removeCoupon(){ applied=''; updateCart(); }
 
-/* -------------------------------------------------------------------------
+/* --------------------------------------------------------------
    Location detection (optional)
--------------------------------------------------------------------------- */
+-------------------------------------------------------------- */
 function setLocMsg(m,k){
   const e=$('loc-msg');
   e.textContent=m;
@@ -594,9 +717,9 @@ function detectLocation(){
   }, err=>setLocMsg(err.code===1?'Location permission denied – allow it in browser settings or type your address':'Could not get location – please type your address','warn'),{enableHighAccuracy:true,timeout:15000,maximumAge:0});
 }
 
-/* -------------------------------------------------------------------------
-   Order placement (sends a WhatsApp link)
--------------------------------------------------------------------------- */
+/* --------------------------------------------------------------
+   Order placement (WhatsApp)
+-------------------------------------------------------------- */
 function placeOrder(){
   if(cfg.shopOpen===false) return toast('🔴 Store is currently closed for orders');
   const t=calc(); if(!t.n) return toast('Your cart is empty');
@@ -624,9 +747,9 @@ function placeOrder(){
   cart={}; applied=''; filterProducts(); updateCart(); toggleCart(); toast('✅ Order sent on WhatsApp');
 }
 
-/* -------------------------------------------------------------------------
-   Owner login / PIN handling
--------------------------------------------------------------------------- */
+/* --------------------------------------------------------------
+   Owner login (PIN based)
+-------------------------------------------------------------- */
 function view(v){ ['login','setup','recover'].forEach(x=>$('v-'+x).classList.toggle('hidden',x!==v)); }
 function openLogin(){
   view('login');
@@ -663,13 +786,15 @@ function doRecover(){
   cfg.adminPin=pin; persist(); closeLogin(); openDash(); toast('✅ PIN reset successfully');
 }
 
-/* -------------------------------------------------------------------------
-   Admin panel
--------------------------------------------------------------------------- */
+/* --------------------------------------------------------------
+   Admin panel helpers
+-------------------------------------------------------------- */
 function openDash(){ $('admin').classList.remove('hidden'); tab('inv'); renderAdmin(); renderSettings(); }
 function closeDash(){
   $('admin').classList.add('hidden');
   filterProducts(); updateCart();
+
+  // keep owner button visible if the URL is the secret one
   const qp=new URLSearchParams(window.location.search);
   if(qp.get('owner')==='true'){
     const btn=document.getElementById('top-owner-btn');
@@ -684,14 +809,265 @@ function tab(n){
 }
 function refreshAll(){ persist(); applyCfg(); renderCats(); filterProducts(); updateCart(); renderAdmin(); renderSettings(); }
 
-/* -------------------------------------------------------------------------
-   Admin – inventory / orders / settings (unchanged from original, omitted for brevity)
-   … (functions: renderAdmin, setPrice, toggleStock, delProduct, addProduct, etc.) …
--------------------------------------------------------------------------- */
+/* --------------------------- Inventory list --------------------------- */
+function renderAdmin(){
+  $('a-count').textContent=products.length;
+  $('o-count').textContent=orders.length;
+  $('n-cat').innerHTML=cfg.cats.map(c=>`<option>${esc(c)}</option>`).join('');
 
-/* -------------------------------------------------------------------------
-   Owner route handling – secret URL
--------------------------------------------------------------------------- */
+  const filterMap={all:true,in:true,out:false};
+  const list=products.filter(p=>adminFilter==='all'?true:(adminFilter==='in'?p.inStock!==false:p.inStock===false));
+  $('a-list').innerHTML=list.length?list.map(p=>{
+    const ok=p.inStock!==false;
+    const thumb=p.image?`<img src="${esc(p.image)}" onerror="this.onerror=null;this.src=PH" class="w-12 h-12 rounded-xl object-cover border border-slate-200 shrink-0">`
+                :`<div class="w-12 h-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-2xl shrink-0">${p.emoji||'🛒'}</div>`;
+    return `<div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div class="flex items-center gap-3 min-w-0 flex-1">${thumb}<div class="min-w-0"><span class="text-[10px] font-extrabold px-2 py-0.5 rounded-md ${ok?'bg-emerald-100 text-emerald-800':'bg-rose-100 text-rose-700'}">${ok?'IN STOCK':'OUT OF STOCK'}</span><span class="text-[10px] text-slate-500 font-semibold ml-1">${esc(p.category)} • ${esc(p.weight)}</span><h4 class="font-bold text-sm truncate mt-0.5">${esc(p.name)}</h4></div></div>
+      <div class="flex flex-wrap items-center gap-2 sm:justify-end shrink-0">
+        <div class="flex items-center gap-1 bg-white border border-slate-200 rounded-xl px-2 py-1"><span class="text-xs font-bold text-slate-400">₹</span><input type="number" id="pr-${p.id}" value="${p.price}" class="w-16 text-xs font-extrabold focus:outline-none"></div>
+        <button onclick="setPrice(${p.id})" class="btn bg-blue-600 text-white !py-1.5 text-xs w-20 text-center">Save ₹</button>
+        <button onclick="toggleStock(${p.id})" class="btn !py-1.5 text-xs w-24 text-center ${ok?'bg-amber-100 text-amber-900':'bg-emerald-600 text-white'}">${ok?'Mark Out':'Mark In'}</button>
+        <button onclick="delProduct(${p.id})" class="btn bg-rose-50 text-rose-600 !py-1.5 text-xs"><i class="fa-solid fa-trash"></i></button>
+      </div></div>`;
+  }).join(''):'<p class="text-xs text-slate-400 text-center py-6">No items in this filter.</p>';
+
+  // Orders list
+  $('o-list').innerHTML=orders.length?orders.map(o=>`<div class="bg-slate-50 border border-slate-200/80 p-3.5 rounded-xl space-y-1.5 text-xs">
+    <div class="flex justify-between gap-2 font-bold"><span>👤 ${esc(o.customer)}</span><span class="text-slate-500 font-normal">${esc(o.date)}</span></div>
+    <p class="text-slate-600">📍 ${esc(o.address)}${o.map?` • <a href="${esc(o.map)}" target="_blank" class="text-blue-600 font-bold">Open map</a>`:''}</p>
+    <div class="bg-white p-2.5 rounded-lg border border-slate-200/60 space-y-1">${o.items.map(i=>`<div class="flex justify-between gap-2"><span>${esc(i.name)} (${esc(i.weight)}) × ${i.quantity}</span><span class="font-bold">₹${i.price*i.quantity}</span></div>`).join('')}</div>
+    <div class="flex justify-between font-extrabold"><span>${esc(o.pay||'')}</span><span class="text-emerald-700">Total ₹${+o.total||0}</span></div>
+  </div>`).join(''):'<p class="text-xs text-slate-400 text-center py-8">No orders yet.</p>';
+}
+
+/* ------------------------------ Stock & Price ------------------------------ */
+function setPrice(id){
+  const v=parseFloat($(`pr-${id}`).value), p=products.find(x=>x.id==id);
+  if(!(v>0)||!p) return toast('Enter a valid price');
+  p.price=v; refreshAll(); toast('✅ Price updated');
+}
+function toggleStock(id){
+  const p=products.find(x=>x.id==id);
+  if(p){ p.inStock=p.inStock===false; refreshAll(); toast(p.inStock?'✅ Item marked In Stock':'❌ Item marked Out of Stock'); }
+}
+function delProduct(id){
+  if(products.length<=1) return toast('Keep at least one item in the store');
+  if(confirm('Delete this item?')){
+    products=products.filter(x=>x.id!=id);
+    delete cart[id];
+    refreshAll();
+  }
+}
+
+/* ------------------------------- Add product ------------------------------- */
+function addProduct(){
+  const name=$('n-name').value.trim(),
+        weight=$('n-weight').value.trim(),
+        price=parseFloat($('n-price').value);
+  if(!name||!weight||!(price>0)) return toast('Fill Item Name, Pack Size and Selling Price');
+  const mrp=parseFloat($('n-mrp').value)||Math.round(price*1.1);
+  products.unshift({id:Date.now(),name,weight,price,originalPrice:mrp,category:$('n-cat').value,inStock:$('n-stock').value==='1',image:photo||$('n-url').value.trim()||'',emoji:'🛒'});
+  ['n-name','n-weight','n-price','n-mrp','n-url'].forEach(i=>$(i).value='');
+  photo=''; $('prev-wrap').classList.add('hidden'); $('up-label').textContent='Upload / Take Photo';
+  refreshAll(); toast('✅ Item added');
+}
+function handlePhoto(e){
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    const img=new Image();
+    img.onload=()=>{
+      const m=360; let w=img.width,h=img.height;
+      if(w>h && w>m){ h*=m/w; w=m; } else if(h>m){ w*=m/h; h=m; }
+      const cv=document.createElement('canvas'); cv.width=w; cv.height=h; cv.getContext('2d').drawImage(img,0,0,w,h);
+      photo=cv.toDataURL('image/jpeg',0.72);
+      $('prev-img').src=photo;
+      $('prev-wrap').classList.remove('hidden');
+      $('up-label').textContent='Photo Selected ✓';
+    };
+    img.src=ev.target.result;
+  };
+  r.readAsDataURL(f);
+}
+
+/* -------------------------- Category handling -------------------------- */
+function addCat(){
+  const n=$('new-cat').value.trim(); if(!n) return toast('Enter a category name');
+  if(cfg.cats.some(c=>c.toLowerCase()===n.toLowerCase())) return toast('Category already exists');
+  cfg.cats.push(n); $('new-cat').value=''; refreshAll(); toast('✅ Category added');
+}
+function delCat(i){
+  const c=cfg.cats[i];
+  if(cfg.cats.length<=1) return toast('Keep at least one category');
+  if(products.some(p=>p.category===c)) return toast('Move or delete items in this category first');
+  cfg.cats.splice(i,1);
+  if(curCat===c) curCat='All';
+  refreshAll();
+}
+
+/* -------------------------- Coupon handling -------------------------- */
+function addCoupon(){
+  const code=$('nc-code').value.toUpperCase().replace(/[^A-Z0-9]/g,''),
+        value=+$('nc-val').value,
+        min=+$('nc-min').value||0,
+        max=+$('nc-max').value||0,
+        type=$('nc-type').value;
+  if(!code||!(value>0)) return toast('Enter coupon code and value');
+  if(type==='pct' && value>100) return toast('Percentage cannot exceed 100');
+  if(cfg.coupons.some(c=>c.code===code)) return toast('Coupon code already exists');
+  cfg.coupons.unshift({code,type,value,min,max:type==='pct'?max:0});
+  ['nc-code','nc-val','nc-min','nc-max'].forEach(i=>$(i).value='');
+  refreshAll(); toast('✅ Coupon added');
+}
+function delCoupon(i){ cfg.coupons.splice(i,1); refreshAll(); }
+
+/* ----------------------------- Store settings ----------------------------- */
+function setShopStatus(open){
+  cfg.shopOpen=!!open;
+  refreshAll();
+  toast(cfg.shopOpen?'🟢 Shop marked Open':'🔴 Shop marked Closed');
+}
+function renderSettings(){
+  $('s-name').value=cfg.name;
+  $('s-wa').value=cfg.whatsapp;
+  $('s-fee').value=cfg.fee;
+  $('s-min').value=cfg.minFree;
+  $('s-email').value=cfg.email||'';
+  $('s-pin').value='';
+
+  const isOpen=cfg.shopOpen!==false;
+  if($('st-open') && $('st-close')){
+    $('st-open').className='btn text-xs !py-2 '+(isOpen?'bg-emerald-600 text-white shadow':'bg-slate-100 text-slate-600');
+    $('st-close').className='btn text-xs !py-2 '+(!isOpen?'bg-rose-600 text-white shadow':'bg-slate-100 text-slate-600');
+  }
+
+  $('s-cats').innerHTML=cfg.cats.map((c,i)=>`<span class="inline-flex items-center gap-2 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-full pl-3 pr-1.5 py-1 text-xs font-bold">${esc(c)}<button onclick="delCat(${i})" class="w-5 h-5 rounded-full bg-white text-rose-600 cursor-pointer">&times;</button></span>`).join('');
+  $('s-coupons').innerHTML=cfg.coupons.length?cfg.coupons.map((c,i)=>`<div class="flex items-center justify-between gap-2 bg-slate-50 border border-slate-200 rounded-xl p-2.5"><div class="min-w-0"><b class="text-xs">${esc(c.code)}</b><p class="text-[11px] text-slate-500">${cDesc(c)}</p></div><button onclick="delCoupon(${i})" class="text-rose-600 px-2 cursor-pointer"><i class="fa-solid fa-trash"></i></button></div>`).join(''):'<p class="text-xs text-slate-400">No coupons yet.</p>';
+}
+function saveSettings(){
+  const name=$('s-name').value.trim(),
+        wa=$('s-wa').value.replace(/\D/g,'');
+  if(!name||wa.length<10) return toast('Enter store name and a valid WhatsApp number');
+  cfg.name=name; cfg.whatsapp=wa; cfg.fee=Math.max(0,+$('s-fee').value||0); cfg.minFree=Math.max(0,+$('s-min').value||0);
+  refreshAll(); toast('✅ Store & Delivery Settings saved');
+}
+function saveSecurity(){
+  const pin=$('s-pin').value,
+        mail=$('s-email').value.trim().toLowerCase();
+  if(pin && !validPin(pin)) return toast('PIN must be 4 digits');
+  if(!validMail(mail)) return toast('Enter a valid Gmail address');
+  if(pin) cfg.adminPin=pin; cfg.email=mail; persist(); $('s-pin').value=''; toast('✅ PIN & Gmail saved');
+}
+
+/* ---------------------------- Backup / Restore ---------------------------- */
+function exportBackup(){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify({v:3,cfg:publicCfg(),products:products})],{type:'application/json'}));
+  a.download='basava-kirana-backup.json';
+  a.click();
+}
+function importBackup(e){
+  const f=e.target.files[0]; e.target.value=''; if(!f) return;
+  if(f.size>5*1024*1024) return toast('Backup file is too large');
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const d=JSON.parse(r.result), c=cleanCfg(d.cfg), p=cleanProducts(toArr(d.products),true);
+      if(!c.whatsapp||!p.length) throw 0;
+      if(!confirm('Restore '+p.length+' items?\nOrders will go to WhatsApp: +'+c.whatsapp+'\n\nContinue ONLY if you made this backup yourself.')) return;
+      products=p; Object.assign(cfg,c);
+      products.forEach(x=>{ if(!cfg.cats.includes(x.category)) cfg.cats.push(x.category); });
+      refreshAll(); toast('✅ Backup restored');
+    }catch(x){ toast('Invalid or unsafe backup file'); }
+  };
+  r.readAsText(f);
+}
+
+/* ------------------------------ Feedback ------------------------------ */
+let aoFeedback=load('kirana_feedback',[]);
+function aoDrawStars(){ document.getElementById('ao-stars').innerHTML=[1,2,3,4,5].map(n=>`<button onclick="aoStars=${n};aoDrawStars()" class="cursor-pointer ${n<=aoStars?'text-amber-400':'text-slate-300'}">★</button>`).join(''); }
+function aoOpenFb(oid){
+  aoFbOrder=oid||null; aoStars=0; document.getElementById('ao-fb-text').value='';
+  const f=oid && aoFeedback.find(x=>x.orderId==oid);
+  if(f){ aoStars=f.stars; document.getElementById('ao-fb-text').value=f.comment||''; }
+  aoClose('ao-orders'); aoDrawStars(); document.getElementById('ao-fb').classList.remove('hidden');
+}
+function aoSubmitFb(){
+  if(!aoStars) return toast('Please select a star rating');
+  const o=aoFbOrder && orders.find(x=>x.id==aoFbOrder);
+  const f={id:Date.now(),date:new Date().toLocaleString(),orderId:aoFbOrder,stars:aoStars,comment:document.getElementById('ao-fb-text').value.trim(),name:o?o.customer:'Customer'};
+  aoFeedback=aoFeedback.filter(x=>!(aoFbOrder && x.orderId==aoFbOrder));
+  aoFeedback.unshift(f);
+  store('kirana_feedback',aoFeedback);
+  const msg=`⭐ *Customer Feedback - ${cfg.name}*\n\n👤 ${f.name}\n${'★'.repeat(f.stars)}${'☆'.repeat(5-f.stars)} (${f.stars}/5)\n${f.comment?`💬 ${f.comment}\n`:''}${o?`🧾 Order of ${o.date} (₹${o.total})`:''}`;
+  window.open(`https://wa.me/${String(cfg.whatsapp).replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`,'_blank');
+  toast('🙏 Thank you for your feedback!'); aoRenderFb();
+}
+function aoRenderFb(){
+  const l=document.getElementById('ao-flist');
+  if(!l) return;
+  const avg=aoFeedback.length?(aoFeedback.reduce((a,f)=>a+f.stars,0)/aoFeedback.length).toFixed(1):'';
+  document.getElementById('ao-favg').textContent=avg?`★ ${avg} (${aoFeedback.length})`:'';
+  l.innerHTML=aoFeedback.length?aoFeedback.map(f=>`<div class="bg-slate-50 border border-slate-200/80 rounded-xl p-3 text-xs space-y-1"><div class="flex justify-between items-center gap-2"><b>${esc(f.name)}</b><div class="flex items-center gap-2"><span class="text-amber-500 font-extrabold">${'★'.repeat(f.stars)}${'☆'.repeat(5-f.stars)}</span><button onclick="aoDelFb(${f.id})" class="btn bg-rose-50 text-rose-600 !px-2 !py-1 text-[11px]"><i class="fa-solid fa-trash"></i></button></div></div>${f.comment?`<p class="text-slate-700">💬 ${esc(f.comment)}</p>`:''}<p class="text-[10px] text-slate-400">${esc(f.date)}</p></div>`).join(''):'<p class="text-xs text-slate-400 text-center py-4">No feedback yet.</p>';
+}
+function aoDelFb(id){
+  if(!confirm('Delete this feedback?')) return;
+  aoFeedback=aoFeedback.filter(f=>f.id!=id);
+  store('kirana_feedback',aoFeedback);
+  aoRenderFb();
+  toast('🗑️ Feedback deleted');
+}
+function aoClearFb(){
+  if(!aoFeedback.length) return toast('No feedback to clear');
+  if(!confirm('Clear all customer feedback records?')) return;
+  aoFeedback=[]; store('kirana_feedback',aoFeedback); aoRenderFb(); toast('🗑️ All feedback cleared');
+}
+
+/* -------------------------- Re‑order / My Orders -------------------------- */
+function aoAgain(){
+  const el=document.getElementById('ao-again'); if(!el) return;
+  const o=orders[0];
+  if(!o||!o.items||!o.items.length){ el.innerHTML=''; return; }
+  el.innerHTML=`<div class="bg-white border border-slate-200 rounded-2xl p-3 mt-3 flex items-center gap-3"><div class="flex-1 min-w-0"><p class="text-sm font-extrabold">🔁 Order again</p><p class="text-xs text-slate-500 truncate">${esc(o.items.map(i=>i.name).join(', '))}</p></div><button onclick="aoOpenOrders()" class="text-xs font-bold text-emerald-700 cursor-pointer shrink-0">My orders</button><button onclick="aoReorder(${o.id})" class="btn bg-emerald-600 text-white !py-2 text-xs shrink-0">Reorder</button></div>`;
+}
+function aoReorder(id){
+  const o=orders.find(x=>x.id==id); if(!o) return;
+  let added=0,miss=0;
+  o.items.forEach(i=>{
+    const p=products.find(x=>x.name===i.name && x.weight===i.weight);
+    if(p && p.inStock!==false){ cart[p.id]=i.quantity; added++; }
+    else miss++;
+  });
+  aoClose('ao-orders');
+  filterProducts(); updateCart();
+  if(!added) return toast('Sorry, those items are unavailable right now');
+  toast(miss?`${added} items added • ${miss} unavailable`:`✅ ${added} items added to cart`);
+  if(document.getElementById('cart-drawer').classList.contains('hidden')) toggleCart();
+}
+function aoOpenOrders(){
+  const L=$('ao-orders-list'); if(!L) return;
+  L.innerHTML=orders.length
+    ?'<div class="flex justify-end"><button onclick="aoClearOrders()" class="text-xs font-bold text-rose-600 cursor-pointer">🗑️ Clear all history</button></div>'
+    +orders.slice(0,10).map(o=>{
+        const f=aoFeedback.find(x=>x.orderId==o.id);
+        return `<div class="border border-slate-200 rounded-2xl p-3 space-y-2"><div class="flex justify-between text-xs"><span class="font-bold">${esc(o.date)}</span><span class="font-extrabold text-emerald-700">₹${o.total}</span></div><p class="text-xs text-slate-600">${esc(o.items.map(i=>i.name+' ×'+i.quantity).join(', '))}</p><div class="flex gap-2"><button onclick="aoReorder(${o.id})" class="btn flex-1 bg-emerald-600 text-white !py-2 text-xs">🔁 Reorder</button><button onclick="aoOpenFb(${o.id})" class="btn flex-1 bg-amber-50 text-amber-800 border border-amber-200 !py-2 text-xs">${f?'★ '+f.stars+' Rated':'⭐ Rate order'}</button></div></div>`;
+      }).join('')
+    :'<p class="text-center text-sm text-slate-400 py-8">No orders yet.</p>';
+  $('ao-orders').classList.remove('hidden');
+}
+function aoDelOrder(id){
+  if(!confirm('Remove this order from your history?')) return;
+  orders=orders.filter(o=>o.id!=id); store('kirana_orders',orders);
+  aoOpenOrders(); if(typeof aoAgain==='function') aoAgain(); toast('🗑️ Order removed');
+}
+function aoClearOrders(){
+  if(!orders.length) return;
+  if(!confirm('Clear your whole order history on this phone?')) return;
+  orders=[]; store('kirana_orders',orders);
+  aoOpenOrders(); if(typeof aoAgain==='function') aoAgain(); toast('🗑️ Order history cleared');
+}
+
+/* -------------------------- Owner‑only route handling -------------------------- */
 document.addEventListener('DOMContentLoaded',()=>{
   try{ init(); }
   catch(e){
@@ -706,22 +1082,57 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
 });
 
-/* -------------------------------------------------------------------------
-   Init entry point
--------------------------------------------------------------------------- */
-function init(){ boot(); applyCfg(); renderCats(); filterProducts(); updateCart(); }
+/* --------------------------- Init entry point --------------------------- */
+function init(){
+  boot();
+  applyCfg();
+  renderCats();
+  filterProducts();
+  updateCart();
+}
 
-/* -------------------------------------------------------------------------
-   Toast container (outside of script so it renders early)
--------------------------------------------------------------------------- */
+/* -----------------------------------------------------------------
+   Helper to expose public config for backup / cloud (if needed)
+----------------------------------------------------------------- */
+function publicCfg(){
+  return {name:cfg.name,whatsapp:cfg.whatsapp,fee:cfg.fee,minFree:cfg.minFree,shopOpen:cfg.shopOpen!==false,cats:cfg.cats,coupons:cfg.coupons};
+}
+
+/* -----------------------------------------------------------------
+   Data cleaning helpers (used for backup import)
+----------------------------------------------------------------- */
+function cleanCfg(c){
+  c=c && typeof c==='object' ? c : {};
+  const o={};
+  const nm=esc(c.name,60); if(nm) o.name=nm;
+  const wa=cfg.whatsapp.replace(/\D/g,''); if(wa.length>=11 && wa.length<=15) o.whatsapp=wa;
+  const fee=+c.fee; if(isFinite(fee)&&fee>=0) o.fee=fee;
+  const mf=+c.minFree; if(isFinite(mf)&&mf>=0) o.minFree=mf;
+  o.shopOpen=c.shopOpen!==false;
+  const cats=Array.isArray(c.cats)?c.cats.map(x=>esc(x,40)).filter(Boolean).slice(0,30):[];
+  if(cats.length) o.cats=cats;
+  o.coupons=Array.isArray(c.coupons)?c.coupons.map(x=>{
+    if(!x||!/^[A-Z0-9]{3,20}$/.test(String(x.code))||(x.type!=='pct'&&x.type!=='flat')) return null;
+    const v=+x.value; if(!isFinite(v)||v<1) return null;
+    const min=+x.min||0;
+    const max=x.type==='pct'?(+x.max||0):0;
+    return {code:x.code,type:x.type,value:v,min,max};
+  }).filter(Boolean).slice(0,30):[];
+  return o;
+}
+function cleanProducts(arr,fresh){
+  return arr.slice(0,500).map((p,i)=>{
+    const name=esc(p && p.name,80), weight=esc(p && p.weight,30), price=+p && +p.price;
+    if(!name||!weight||!(price>0)) return null;
+    const id=!fresh && isFinite(+p.id) && +p.id>0 ? +p.id : Date.now()+i;
+    return {id,name,weight,price,originalPrice:+p.originalPrice||price,category:esc(p.category,40)||'General',inStock:p.inStock!==false,emoji:esc(p.emoji,8)||'🛒',image:(typeof p.image==='string' && p.image.length<400000 && (/^data:image\/(jpeg|png|webp|gif);base64,/.test(p.image)||/^https:\/\/[^\s"']+$/.test(p.image)))?p.image:''};
+  }).filter(Boolean);
+}
+
+/* -----------------------------------------------------------------
+   End of script
+----------------------------------------------------------------- */
 </script>
-
-<!-- Toast container -->
-<div id="toast"
-     class="fixed top-16 inset-x-4 z-[70] hidden pointer-events-none">
-  <div class="max-w-sm mx-auto bg-slate-900 text-white text-sm font-semibold rounded-xl px-4 py-3 shadow-xl text-center"
-       id="toast-t"></div>
-</div>
 
 </body>
 </html>
