@@ -27,6 +27,10 @@
       <span class="bg-amber-400 text-slate-950 text-[10px] px-2 py-0.5 rounded-full font-extrabold shrink-0">⚡ 1 HR</span>
       <span id="ann" class="truncate text-[11px] sm:text-xs font-semibold"></span>
     </div>
+    <!-- Owner button added back, hidden by default -->
+    <button id="top-owner-btn" onclick="openLogin()" class="hidden shrink-0 text-[11px] bg-emerald-950/70 hover:bg-emerald-950 px-2.5 py-1 rounded-lg font-bold flex items-center gap-1.5 border border-emerald-500/30 cursor-pointer">
+      <i class="fa-solid fa-lock text-[10px] text-amber-300"></i><span>Owner Login</span>
+    </button>
   </div>
 </div>
 
@@ -581,8 +585,18 @@ function openLogin(){
 function closeLogin(){$('login-modal').classList.add('hidden');['login-pin','setup-pin','rec-pin'].forEach(i=>$(i).value='');$('setup-email').value='';$('rec-email').value=''}
 const validPin=p=>/^\d{4}$/.test(p),validMail=e=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 function doLogin(){
-  if($('login-pin').value===String(cfg.adminPin)){closeLogin();openDash()}
-  else{toast('❌ Incorrect PIN');$('login-pin').value=''}
+  const pinInput = $('login-pin');
+  const entered = pinInput ? pinInput.value.trim() : '';
+  const currentPin = String(cfg.adminPin || '2026').trim();
+
+  if (entered.length === 4 && entered === currentPin) {
+    toast('✅ Correct PIN');
+    closeLogin();
+    openDash();
+  } else {
+    toast('❌ Incorrect PIN');
+    if (pinInput) pinInput.value = '';
+  }
 }
 function doSetup(){
   const pin=$('setup-pin').value,mail=$('setup-email').value.trim().toLowerCase();
@@ -599,7 +613,12 @@ function doRecover(){
 
 /* ---------- Admin ---------- */
 function openDash(){$('admin').classList.remove('hidden');tab('inv');renderAdmin();renderSettings()}
-function closeDash(){$('admin').classList.add('hidden');filterProducts();updateCart()}
+function closeDash(){$('admin').classList.add('hidden');filterProducts();updateCart();onst urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('owner') === 'true') {
+    const topBtn = $('top-owner-btn');
+    if (topBtn) topBtn.classList.remove('hidden');
+  }
+}
 function tab(n){['inv','ord','set'].forEach(t=>{
   $('at-'+t).classList.toggle('hidden',t!==n);
   $('tb-'+t).className='btn text-xs '+(t===n?'bg-emerald-600 text-white':'bg-white text-slate-600 border border-slate-200');
@@ -721,6 +740,14 @@ document.addEventListener('DOMContentLoaded',()=>{
     try{localStorage.removeItem('kirana_products')}catch(x){}
     boot();applyCfg();renderCats();filterProducts();updateCart();
   }
+   // --- Check for secret owner URL ---
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('owner') === 'true') {
+    const topBtn = $('top-owner-btn');
+    if (topBtn) topBtn.classList.remove('hidden'); // Makes the top bar button visible
+    openLogin(); // Pops open the PIN window
+  }
+});
    // --- Secret Owner Route Check ---
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get('owner') === 'true') {
