@@ -613,9 +613,9 @@ function doRecover(){
 
 /* ---------- Admin ---------- */
 function openDash(){$('admin').classList.remove('hidden');tab('inv');renderAdmin();renderSettings()}
-function closeDash(){$('admin').classList.add('hidden');filterProducts();updateCart();onst urlParams = new URLSearchParams(window.location.search);
+function closeDash(){$('admin').classList.add('hidden');filterProducts();updateCart();const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get('owner') === 'true') {
-    const topBtn = $('top-owner-btn');
+    const topBtn = document.getElementById('top-owner-btn');
     if (topBtn) topBtn.classList.remove('hidden');
   }
 }
@@ -734,12 +734,40 @@ function importBackup(e){
 }
 
 /* ---------- Start ---------- */
-function init(){boot();applyCfg();renderCats();filterProducts();updateCart();if(!$('grid').children.length)throw 0}
-document.addEventListener('DOMContentLoaded',()=>{
-  try{init()}catch(e){
-    try{localStorage.removeItem('kirana_products')}catch(x){}
-    boot();applyCfg();renderCats();filterProducts();updateCart();
+/* ---------- Start ---------- */
+function init(){
+  boot();
+  applyCfg();
+  renderCats();
+  filterProducts();
+  updateCart();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    init();
+  } catch(e) {
+    console.error("Init fallback:", e);
+    try { localStorage.removeItem('kirana_products'); } catch(x) {}
+    boot();
+    applyCfg();
+    renderCats();
+    filterProducts();
+    updateCart();
   }
+
+  // Check secret URL route
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('owner') === 'true') {
+      const topBtn = document.getElementById('top-owner-btn');
+      if (topBtn) topBtn.classList.remove('hidden');
+      if (typeof openLogin === 'function') openLogin();
+    }
+  } catch(err) {
+    console.error("Owner route check failed:", err);
+  }
+});
    // --- Check for secret owner URL ---
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get('owner') === 'true') {
