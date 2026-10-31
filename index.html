@@ -613,7 +613,12 @@ function doRecover(){
 
 /* ---------- Admin ---------- */
 function openDash(){$('admin').classList.remove('hidden');tab('inv');renderAdmin();renderSettings()}
-function closeDash(){$('admin').classList.add('hidden');filterProducts();updateCart();const urlParams = new URLSearchParams(window.location.search);
+function closeDash(){
+  $('admin').classList.add('hidden');
+  filterProducts();
+  updateCart();
+
+  const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get('owner') === 'true') {
     const topBtn = document.getElementById('top-owner-btn');
     if (topBtn) topBtn.classList.remove('hidden');
