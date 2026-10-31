@@ -27,9 +27,6 @@
       <span class="bg-amber-400 text-slate-950 text-[10px] px-2 py-0.5 rounded-full font-extrabold shrink-0">⚡ 1 HR</span>
       <span id="ann" class="truncate text-[11px] sm:text-xs font-semibold"></span>
     </div>
-    <button onclick="openLogin()" class="shrink-0 text-[11px] bg-emerald-950/70 hover:bg-emerald-950 px-2.5 py-1 rounded-lg font-bold flex items-center gap-1.5 border border-emerald-500/30 cursor-pointer">
-      <i class="fa-solid fa-lock text-[10px] text-amber-300"></i><span>Owner Login</span>
-    </button>
   </div>
 </div>
 
@@ -577,7 +574,10 @@ function placeOrder(){
 
 /* ---------- Owner login (Prompts for PIN each time, Reset on Forgot PIN) ---------- */
 function view(v){['login','setup','recover'].forEach(x=>$('v-'+x).classList.toggle('hidden',x!==v))}
-function openLogin(){view(cfg.adminPin?'login':'setup');$('login-modal').classList.remove('hidden')}
+function openLogin(){
+  view('login');
+  $('login-modal').classList.remove('hidden');
+}
 function closeLogin(){$('login-modal').classList.add('hidden');['login-pin','setup-pin','rec-pin'].forEach(i=>$(i).value='');$('setup-email').value='';$('rec-email').value=''}
 const validPin=p=>/^\d{4}$/.test(p),validMail=e=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 function doLogin(){
@@ -720,6 +720,11 @@ document.addEventListener('DOMContentLoaded',()=>{
   try{init()}catch(e){
     try{localStorage.removeItem('kirana_products')}catch(x){}
     boot();applyCfg();renderCats();filterProducts();updateCart();
+  }
+   // --- Secret Owner Route Check ---
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('owner') === 'true') {
+    openLogin();
   }
 });
 </script>
